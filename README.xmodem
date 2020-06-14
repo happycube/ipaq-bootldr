@@ -1,0 +1,37 @@
+You can play with 2 xmodem tuning parameters.  
+Parameters are changed like so:
+boot> set <param_name> <param_value>
+The changes are not permanent unless you do a
+boot> params save
+
+The 2 xmodem parameters are:
+xmodem_initial_timeout  
+xmodem_timeout
+
+xmodem_initial_timeout is the timeout used for the first byte of
+the xfer.  Once a timeout is gotten on a char, xmodem switches to the
+xmodem_timeout value.  This allows our xmodem to be fitted to various
+xmodem senders.  In particular, minicom and hyperterm have different
+requirements.  minicom would be happy w/fairly quick initial and long
+secondary, hypnoterm would like short/short.
+
+Minicom: once the send menu is entered, minicom/xmodem begins queuing
+characters.  Xmodem on the rx (bootldr) side sends a NAK to start the
+xfer and then sends NAKs whenever it times out on receiving a block.
+If the sender takes too long to begin a send, then xmodem can end up
+with >1 NAKs queued.  This then confuses xmodem and we get the
+mega-errors problem.
+
+xmodem_initial_timeout should be long enough to get into the
+xmodem menu so that xmodem will rx and queue the NAK sent by the
+bootldr.   
+xmodem_timeout should be very long to make sure that more than one NAK
+is not queued by minicom while the user is navigating the file system
+in order to select the file to download.  I use 0xffff for initial and
+leave the other param alone.
+
+Hippoterm: Does not queue naks, so short/short is best,
+e.g. 0xffff/0xffff, since hyperterm will start sending on the
+next NAK after the file name is selected.  I don't use hypertomb, so I
+don't know how well these numbers actually work.
+

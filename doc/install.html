@@ -1,0 +1,343 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+                      "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>iPaq H3600 Handhelds.org Bootloader Installation Instructions</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+
+<body lang="en">
+<h1 style="text-align: center">iPaq H3100/H3600/H3700/H3800 Handhelds.org Bootloader Installation Instructions</h1>
+
+<p> <strong>These are the new consolidated instructions for installing
+bootldr via BootBlaster.</strong> <br>Here are the <a
+href="install-via-osloader.html">old instructions for installing the
+bootldr via osloader</a>.  </p>
+
+<table border=1 bgcolor="#e0e0e0">
+<tr><th bgcolor="#ff8080">WARNING</th></tr>
+<tr><td>
+
+  <p><b>BootBlaster versions 1.15 and beyond are safe to use with the H3800 as well the H3100/H3600/H3700.</b>
+  <p><b>bootldr versions 2.18.01 and beyond are safe to use with the H3800 as well the H3100/H3600/H3700.</b>
+
+  <p><b>These instructions have been tested on PocketPC and PocketPC2002</b></p>
+
+  <p> <b>Installing Linux on your iPAQ will erase all data stored in DRAM or
+  Flash ROM under Pocket PC.</b>  Use the appropriate backup routines before
+  performing this installation or you will lose data.
+
+  <p> <b>If this installation fails then your iPAQ could become (temporarily) unusable.</b> 
+
+  We try very hard to make these instructions as simple as possible
+  given the constraints on our development resources and priorities,
+  but there is some danger involved.</p>
+
+  <p> <b>Compaq Research will ensure that you do not permanently turn your iPAQ into a paperweight</b>, 
+
+  but it is <em><b>very</b></em> inconvenient for all of us if we have
+  to fix a unit that was rendered nonbooting by a failed installation
+  (or WinCE restoration).</p>
+
+  <p><b>The bootldr can be installed via USB cradle/cable, but installing Linux currently requires a serial cradle or cable</b></p>
+
+</td></tr></table>
+
+
+<H2>PocketPC Restoration</h2>
+
+    <p>If you save an image of your PocketPC software as described
+    in the <a
+    href="http://www.handhelds.org/projects/wincerestoration.html">WinCE/PocketPC
+    restoration instructions</a> then you will be able to restore it
+    again after installing Linux.  These instructions have been tested on PocketPC and PocketPC 2002.
+
+    <p>  You can also reinstall Pocket PC from a
+    Compaq SoftPAQ software update.  See  
+See <A href="http://www.handhelds.org/z/wiki/Restoring%20Windows%20CE%20from%20the%20Compaq%20iPAQ%20Update">Restoring Windows CE from the
+    Compaq iPAQ Update</a> for instructions.  As of December 18, 2001, only PocketPC updates are available.
+
+<h2>Hardware Requirements:</h2>
+<ul>
+  <li>A computer that runs Windows 95/98/2000/NT. A few people have installed
+    Linux on the iPAQ using a Linux computer.  There are Linux conectivity
+    instructions at <a
+    href="http://www.handhelds.org/minihowto/wince-link/index.html">http://www.handhelds.org/minihowto/wince-link/index.html</a>
+    and <a
+    href="http://www.handhelds.org/pipermail/ipaq/2000-August/000061.html">
+    http://www.handhelds.org/pipermail/ipaq/2000-August/000061.html</a>
+    <ul>
+      <li>Install the ActiveSync application (Async) from the iPAQ H3600
+        Pocket PC distribution CD that came with your unit onto your Windows
+        system.</li>
+      <li>You will also be using HyperTerminal (or other terminal emulator
+        capable of the xmodem protocol, such as minicom on Linux.  When
+	setting up Hyperterminal, minicom, or other terminal emulator to
+	work with the iPAQ, configure it for 115200 baud, <em>no flow control</em>, 8 bits, and no
+	parity.</li>
+    </ul>
+  </li>
+  <li>The following files from <a
+    href="ftp://ftp.handhelds.org/pub/linux/compaq/ipaq/v0.30/">ftp://ftp.handhelds.org/pub/linux/compaq/ipaq/v0.30/:</a>
+    <ul>
+      <li><a
+        href="ftp://ftp.handhelds.org/pub/linux/compaq/ipaq/v0.30/bootldr-2.18.01.bin">bootldr-2.18.01.bin</a></li>
+      <li><a
+        href="ftp://ftp.handhelds.org/pub/linux/compaq/ipaq/v0.30/bootldr-2.18.01.bin.md5sum">bootldr-2.18.01.bin.md5sum</a></li>
+      <li><a
+        href="ftp://ftp.handhelds.org/pub/linux/compaq/ipaq/v0.30/BootBlaster_1.18.exe">BootBlaster_1.18.exe</a></li>
+      <li><a
+        href="ftp://ftp.handhelds.org/pub/linux/compaq/ipaq/v0.30/BootBlaster_1.18.exe.md5sum">BootBlaster_1.18.exe.md5sum</a></li>
+    </ul>
+    </li>
+  </ul>
+  </li>
+</ul>
+
+<h2>Notes and Recommendations</h2>
+
+  <ul> 
+
+  <li>Some web browser's default download settings is 'ASCII' mode instead
+  of 'binary' mode, this will make the downloaded files corrupt.  For
+  example, Netscape requires that you hold down the shift key when you
+  click on an item for downloading in 'binary' mode.
+  <p><strong>WARNING</strong>: Please verify the 'md5sum' of any file
+  before using.  See <A
+  href="http://www.handhelds.org/z/wiki/md5sum">md5sum</a> for pointers to
+  md5sum executables for Windows.</p> </li>
+
+    <li>If you are going to be using minicom, there is a timing issue. If
+        minicom starts to NAK repeatedly, stop the download Wait for the
+        second '.' to print, then type ctrl-c.  Retype the command at the
+        boot loader prompt followed by a &lt;cr>, then ctrl-a, z, s, select
+        xmodem, , &lt;cr>, &lt;cr>. This will restart the down load very
+        quickly and avoid the timing issues.  <p></p> </li>
+
+<li>If you have trouble with BootBlaster or with the bootldr, send email to bootldr@handhelds.org or join the IRC channel #handhelds.org on irc.openprojects.net.
+</ul>
+
+<p></p>
+
+<h3>Installation:</h3>
+<ol>
+  <li>Connect your iPAQ via the USB or serial cradle or cable.</li>
+
+  <li>If using a serial cradle or cable, then configure your iPAQ to use the serial port for ActiveSync.
+    <ul>
+      <li>Select settings from the Start Menu (the Microsoft flag icon)</li>
+      <li>Click the Connections tab, and then double-click the PC icon.</li>
+      <li>Ensure the <em>Automatically synchronize when serial cable is
+        connected using</em> is checked<em>.</em></li>
+      <li>Change <em>USB</em> to <em>115200 Default.</em></li>
+      <li>Click OK (top right of the screen).</li>
+    </ul>
+  </li>
+  <li>Use the <A href="">ActiveSync</a> application to connect to your iPaq 3600 from your
+  PC.  If there is not an ActiveSync icon in the tool tray, then use the
+  Start->Program->ActiveSync menu item to start it.
+  </li>
+
+  <li>Copy <a
+    href="ftp://ftp.handhelds.org/pub/linux/compaq/ipaq/v0.30/BootBlaster_1.18.exe">BootBlaster_1.18.exe</a>
+    to the default folder on your iPaq from your Windows machine using drag
+    and drop or cut and paste.  You may safely ignore any messages that say
+    it "may need to convert" file formats.</li>
+
+  <li>Copy <a
+    href="ftp://ftp.handhelds.org/pub/linux/compaq/ipaq/v0.30/bootldr-2.18.01.bin">bootldr-2.18.01.bin</a>
+    to the default folder on your iPaq from your Windows machine.  Again, You may safely ignore
+    any messages that say it "may need to convert" file formats.</li>
+
+  <li>On your iPaq H3600, find BootBlaster_1.18.exe wherever you put it, and then
+    execute BootBlaster_1.18.</li>
+
+<a name="savingwince"><h4>Backing Up PocketPC</h4></a>
+
+  <li>From the "Flash" menu, select "Save".   This will save a copy of your current
+     bootloader to DRAM on the iPAQ (under the name "saved_bootldr.bin").</p></li>
+  <li><p>Copy the "saved_bootldr.bin" off of your iPAQ and put it in a safe place in case
+     you wish to restore it later.</p></li>
+
+  <li>From the "Flash menu, select <em>Save Windows gz</em> This will copy
+  and compress all the flash ROM on your ipaq into a .gz file along with a file
+  containing the asset information from your iPAQ. 
+  This will take a while.  After it is complete, copy these files to your
+  PC to save them.  Under normal circumstances, installing Linux will not
+  touch the asset partition in flash, but it is safer to have a backup copy.
+
+  <p><em>Wait very patiently</em>This will take many minutes, but a progress bar is displayed.</p>
+
+<a name="installingbootldr"><h4>Installing the Bootldr</h4></a>
+
+    <li><p>From the "Flash" menu on BootBlaster, select "Program".
+     A file dialog will open allowing you to select the bootloader to use.
+     Select the bootloader from step #5.</p>
+
+</li>
+<li><p><em>Wait patiently</em>.
+     On my iPAQ, it takes about 15 seconds to program the bootloader.  During
+     this time, the iPAQ just sits there.</p>
+
+<p>First, BootBlaster protects all the flash blocks containing PocketPC so
+     that there is no way that an interruption in the programming process
+     can cause the OS to be corrupted.  
+<p><em>Sometimes BootBlaster freezes during this process</em>.  If it sits
+    for more than 15 seconds with no activity, then reboot the iPAQ by
+    pushing the recessed reset button at the bottom right and repeat this
+    step.  It is perfectly safe to reset the iPAQ if it freezes while
+     protecting flash.
+
+<p>After protecting flash, it erases the boot sector and then it programs
+     the new boot loader into the boot sector.
+
+<p>We discovered by accident that as long as PocketPC is installed in
+     flash, it is actually safe for the process to be interrupted between
+     erasing and programming a new bootldr.  PocketPC has no dependence on
+     any functionality in the bootldr.  <em>Please do not interrupt the
+     iPAQ while BootBlaster is installing the bootldr, just to be on the
+     safe side.</em> I'm just adding this note here to reduce anxiety
+     levels.  <em>It is not safe to erase the bootldr if Linux is installed
+     in flash -- Linux depends on the bootldr to configure the machine
+     before jumping to Linux</em>
+
+</li>
+    
+<a name="quickcheck"><h4>Check the Install</h4></a>
+
+<li><p>From the "Flash" menu on BootBlaster, select "Verify".  If it does <u>not</u>
+     say that you have a valid bootloader, do <em>NOT</em> reset your iPAQ (did you
+     really want a brick?).  Instead, try programming the flash again.  If that
+     doesn't work, program your flash with your saved bootloader.  If that doesn't
+     work, send e-mail to bootldr@handhelds.org and/or get on the IRC and ask
+     for help.  Leave the iPAQ plugged in and do <em>NOT</em> reset it.</p>
+
+</li>
+
+<p>That's it!  OK, now take a deep breath.  Assuming you had no error messages,
+  you are past the only risky part of the install.</p>
+
+<a name="reboot"><h4>Reboot the iPAQ</h4></a>
+
+<strong><em>When the iPAQ is reset, by default, it will boot Windows
+CE if present.</em></strong>
+
+<li>Before proceeding, make sure that you have the terminal emulator properly configured:
+<ul>
+<li><b>115200 baud</b>
+<li><b>no flow control</b>
+</ul> 
+If flow control is enabled, the terminal emulator will not accept keyboard input.
+</li>
+
+<li>
+<b>To get to the bootldr's command line prompt (<tt>boot></tt>) and avoid booting Windows CE:</b>
+
+<p><b>For bootldr versions 2.17.12 or newer or 2.17.6 or older:</b> depress and hold the center of the joypad while pushing the recessed reset button.
+
+<p><b>For bootldr versions 2.17.7 to 2.17.11</b>: depress and hold the
+ suspend/resume button for a couple of seconds, then push the recessed
+ reset button, then continue to hold the suspend for a couple more seconds,
+ then release the suspend/resume button.
+
+
+<li>
+Reboot your iPaq H3600 by pushing the recessed reset button at
+the lower right of the unit while holding the center of the joypad.
+
+    <p>
+    If the iPAQ is in a cradle, you will have to remove it to do push
+    the reset button.  The boot loader should come up and display a
+    splash screen on the LCD unless you have an H3100.  The bootldr
+    does not support the H3100 LCD at this time.
+
+
+    <p>
+    Put the iPAQ back in the cradle.  At
+    this point, either type a space in the terminal emulator or push
+    the calendar button on the iPAQ to get the bootldr's prompt
+    "boot>".  
+
+    <strong></em>You will not see the <tt>boot></tt> prompt unless you
+    have the iPAQ attached to a host computer via either a serial
+    cable or a serial cradle with a terminal emulator such as
+    Hyperterminal or minicom.</em></strong>
+
+    <li>Before proceeding to Linux installation, unlock flash with this command: <strong>pflash 0x40000 0xffff 0</strong> by typing it at the <tt>boot</tt> prompt.
+
+    <p> BootBlaster 1.18 locks the portion of flash containing Windows CE.
+    The <strong>pflash addr len 0</strong> command actually unlocks all of
+    flash.  The bootldr will automatically protect itself upon boot if the
+    bootldr sector is not locked, however you may do so manually with the
+    command: <strong>pflash 0x0 0x3ffff 1</strong>.
+
+</ol>
+
+<a name="finished"><h3>The Installation is Complete!</h3></a>
+
+   Congratulations!  At this point you have a working bootloader and you are
+   ready to install a Linux distribution.  The latest Linux distribution for
+   the iPAQ H3600 series is available at <a
+   href="http://familiar.handhelds.org">http://familiar.handhelds.org</a> and
+   can be installed using the instructions at <a
+   href="http://familiar.handhelds.org/familiar/releases/latest/install/H3600/install.html">http://familiar.handhelds.org/familiar/releases/latest/install/H3600/install.html</a>.
+   The older <a href="http://handhelds.org">Handhelds.org Linux
+   Distribution</a> which was last updated in March of 2001 and is not likely
+   to see any further updates can be installed by following the instructions
+   at <A href="update.html">update.html</a>.  All future effort will be
+   directed towards building the <a
+   href="http://familiar.handhelds.org">Familiar Distribution</a>.
+
+<a name="bootldrprompt"><h3>Getting to the Bootldr Prompt</h3></a>
+<ul><li>if you need to get back into the boot loader after you have Linux
+running, restart the iPAQ and quickly hit the space bar a few times during the
+boot process. You can restart the iPAQ with the Linux command <em>shutdown -r
+now.</em>
+</li></ul>
+
+<hr>
+
+<h2>BootBlaster Related Notes</h2>
+
+<h3>Question: <em>WHERE IS MY PENGUIN??? WHY DO I STILL SEE THE WINCE SPLASH SCREEN?</em></h3>
+<p> Bootldr 2.18.01 has been "fixed" to boot WinCE correctly without losing the contents of DRAM after a reset.  As a result of this change, you will NOT see the bootldr splash screen at boot time.  At startup the bootldr scans for a valid WinCE partition....if it finds one, it runs WinCE immediately.  Hence you don?t see the happy penguin.</p>
+
+
+<p>This is a <em>Fundamental Change in Behavior that may Cause Much Confusion</em></p>
+
+<p>When running WinCE, to bring up the penguin bootscreen and to use the serial line to control the bootloader, you must hold down the ACTION key as you push the little reset button.  The ACTION key is the center of the joypad---just squish it down and hit reset.  Now you can proceed to install Linux and the bootloader will behave as it has always done.</p> 
+
+<p><b>If you are running bootldr versions 2.17.7 to 2.17.11/b>, then instead of holding down the action button, depress and hold the suspend/resume button for a couple of seconds, then push the recessed reset button, then continue to hold the suspend for a couple more seconds, then release the suspend/resume button. 
+ 
+<p>Why, may you ask, does the bootloader behave in this strange way under WinCE?  Well, WinCE stores lots of stuff in DRAM include user software, the registry, user data; quite a lot, really.  On a machine with only 16M of DRAM it can fill up very quickly.  Our bootloader needs to be very careful about what memory it uses so that it doesn't accidentally trash the DRAM.  We think we have a safe space, but things change between different models, languages, and os versions, so we're being careful.  The auto-boot WinCE code is careful to not touch DRAM, so we know we won't damage your data.  Holding down the ACTION key is your way of telling the bootloader that it should go ahead and use a chunk of DRAM for its own purposes.</p>
+
+<h3>Question: <em>I'm about to install Linux --- how can I save my WinCE image?</em></h3>
+<p> The Linux bootloader has the ability to upload the contents of your Flash file system.  From the boot prompt, type:</p>
+<PRE>
+  upload flash 0x40000 0x1fc0000    (for a unit with 32MB of flash)
+  upload flash 0x40000 0xfc0000     (for a unit with 16MB of flash)
+
+</PRE>
+
+
+<p>The bootloader occupies the space from <code>0</code> to <code>0x40000</code>, so what you are saying is to upload the remainder of your iPAQ (which should be your entire WinCE image).  The bootloader uploads in XModem protocol.  <strong>NOTE</strong>: This upload command is finicky.  You are advised to test your saved WinCE image.  It may also help to upload in pieces and stitch together the final file.</p>
+
+<ul><li><p><a href="mailto:Andrew.Christian@compaq.com">Andrew Christian</a></p>
+
+</li></ul>
+
+<p style="text-align: left">If you have any problems, please post to one of the following lists:</p>
+<p style="text-align: left">General problems with setup, installation, user-land software or configuration: <a href="mailto:ipaq@handhelds.org">ipaq@handhelds.org</a>.</p>
+<p style="text-align: left">Issues believed to be related to the kernel: <a href="mailto:ipaq@handhelds.org">ipaq@handhelds.org</a>.</p>
+<p style="text-align: left">Thank you.</p>
+
+<p style="text-align: left"></p>
+
+<p style="text-align: left">Modified <em>$Date: 2002/04/04 23:26:44 $</em> by $Author: jamey $</p>
+
+<p style="text-align: left">Please send comments on this document to the
+bootldr mailing list (<a href="mailto:bootldr@compaq.com">bootldr@compaq.com</a>).</p>
+
+<p></p>
+</body>
+</html>

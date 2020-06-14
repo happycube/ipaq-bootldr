@@ -1,0 +1,42 @@
+$Id: TODO,v 1.6 2002/12/10 17:30:59 jamey Exp $
+
+T1) new serial port abstraction to help us get rid of some of the ifdef's
+and also so that bootldr can use irda, usb, pcmcia serial for input and
+output -- done.
+T2) irda console, using abstraction from T1
+    sachac working on this.
+T3) usb console, using abstraction from T1
+T4) IDE write -- done. sachac 03/28/2002.
+T5) VFAT write to existing file (updating filesize, but otherwise not changing FAT or dir entry).
+    done. sachac 03/28/2002.
+T6) adding support to T5 to update FAT entries and dir entry
+    done. sachac 03/28/2002.
+T7) using T6 to delete files
+    sachac working on this.
+T8) using T6 to create files
+T9) Using T7 and T8 to create and delete directories
+T10) long filename support  -- done sachac 3/27/2002 
+
+T20) add ext2 filesystem definitions
+T21) read ext2 superblock
+T22) mount ext2 filesystem
+T23) read and list ext2 directories
+T24) read ext2 files
+T25) allocate space for ext2 files
+T26) update ext2 directory entries
+T27) create, write, delete ext2 files
+T28) create, delete ext2 directories
+
+T30) Add sa1100/pxa250 USB char support
+
+T40) Add MMC framework
+T41) Add MMC support for H3800
+T42) Add MMC support for H3900
+T43) Add MMC support for H5000
+
+T100) pxa250/h3900 support: see http://www.handhelds.org/projects/h3900.html
+T101) h3900 support -- done
+T105) h5000 support
+T110) h1900 support
+T115) h2200 support
+

@@ -1,0 +1,222 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+                      "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>iPaq H3600 Linux Update Instructions - v0.20</title>
+  <meta name="GENERATOR" content="amaya V3.2">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+
+<body lang="en">
+<h1 style="text-align: center">iPAQ H3600 Linux Update Instructions -
+v0.20</h1>
+
+<h2>WARNINGS:</h2>
+<ul>
+  <li><h3>If this installation fails then your iPAQ could become (temporarily)
+    unusable.</h3>
+    <p>This version is very unlikely to result in an installation failure. We
+    are trying very hard to make this procedure bullet proof, and we think
+    we're there with the boot loader. The boot loader can not be overwritten
+    by accident; it does an end to end checksum before writing flash,  and
+    short of losing power during the actual writing of flash memory, an
+    unlikely scenario, is believed bullet proof. Some additionial bug is
+    certainly possible, but we think it is unlikely.   If you have not
+    upgraded your boot load to version 2.14.5 or later, please do so
+    immediately. (See <a href="#updating-the-bootldr">Updating the bootldr</a>.)</p>
+    <p><em>Compaq Research will ensure that you do not permanently turn your
+    iPAQ into a paperweight</em>, but it is <em><b>very</b></em> inconvenient
+    for all of us if we have to fix a unit that was rendered nonbooting by a
+    failed installation (or WinCE restoration).</p>
+  </li>
+  <li><h2>Errata</h2>
+    <ul>
+      <li>Some web browser's default download settings is 'ASCII' mode instead
+        of 'binary' mode, this will make the downloaded files corrupt.  For
+        example, Netscape requires that you hold down the shift key when you
+        click on an item for downloading in 'binary' mode.
+        <p><strong>WARNING</strong>:  Please verify the 'md5sum' of any file
+        before using.</p>
+        <p></p>
+      </li>
+      <li>Unless you really really know what you are doing, do not mix
+        kernels, ramdisk and cramfs files from different V0.?? releases. Each
+        version can have different memory mappings.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3>Requirements:</h3>
+<ul>
+  <li>An iPAQ handheld with the bootldr already installed (see <A href="install.html">install.html</a>).
+  <li>A computer that runs Linux or Windows 95/98/2000/NT. A few people have installed
+    Linux on the iPAQ using a Linux computer.  There are Linux conectivity
+    instructions at <a
+    href="http://www.handhelds.org/minihowto/wince-link/index.html">http://www.handhelds.org/minihowto/wince-link/index.html</a>
+    and <a
+    href="http://www.handhelds.org/pipermail/ipaq/2000-August/000061.html">
+    http://www.handhelds.org/pipermail/ipaq/2000-Auguest/000061.html</a>
+    <ul>
+      <li>You will be using HyperTerminal (or other terminal emulator
+        capable of the xmodem protocol, such as minicom on Linux.</li>
+    </ul>
+  </li>
+  <li>The following files from <a
+    href="/pub/linux/compaq/ipaq/v0.20">/pub/linux/compaq/ipaq/v0.20:</a>
+    <ul>
+      <li><a
+        href="/pub/linux/compaq/ipaq/v0.20/bootldr-0000-2.14.5">bootldr-0000-2.14.5</a></li>
+      <li><a
+        href="/pub/linux/compaq/ipaq/v0.20/params-v20.bin">params-v20.bin</a></li>
+      <li><a
+        href="/pub/linux/compaq/ipaq/v0.20/params-v20.bin.md5sum">params-v20.bin.md5sum</a></li>
+      <li><a
+        href="/pub/linux/compaq/ipaq/v0.20/init-2-70.cramfs">init-2-70.cramfs</a></li>
+      <li><a
+        href="/pub/linux/compaq/ipaq/v0.20/init-2-70.cramfs.md5sum">init-2-70.cramfs.md5sum</a></li>
+      <li><a
+        href="/pub/linux/compaq/ipaq/v0.20/root-2-57.cramfs">root-2-57.cramfs</a></li>
+      <li><a
+        href="/pub/linux/compaq/ipaq/v0.20/root-2-57.cramfs.md5sum">root-2-57.cramfs.md5sum</a></li>
+      <li><a
+        href="/pub/linux/compaq/ipaq/v0.20/usr-2-61.cramfs">usr-2-61.cramfs</a></li>
+      <li><a
+        href="/pub/linux/compaq/ipaq/v0.20/usr-2-61.cramfs.md5sum">usr-2-61.cramfs.md5sum</a></li>
+      <li><a
+        href="/pub/linux/compaq/ipaq/v0.20/zImage-2.4.0-rmk2-np1-hh1">zImage-2.4.0-rmk2-np1-hh1</a></li>
+      <li><a
+        href="/pub/linux/compaq/ipaq/v0.20/zImage-2.4.0-rmk2-np1-hh1.md5sum">zImage-2.4.0-rmk2-np1-hh1.md5sum</a></li>
+      <li><a
+        href="ftp://ftp.handhelds.org:/pub/linux/compaq/ipaq/v0.20/bootldr-0000-2.14.5.md5sum">bootldr-0000-2.14.5.md5sum</a>
+        <p></p>
+      </li>
+    </ul>
+  </li>
+  <li>iPAQ H3600 with a serial cable (USB is NOT supported at this time). For
+    those of you that can not wait for a serial cable (they are now often in
+    stock at various distributors if you look around for them), Peter Monta
+    has instructions for a home made cable which invalidates the warrenty on
+    the base station at <a
+    href="http://www.handhelds.org/pipermail/ipaq/2000-August/000061.html">
+    http://www.handhelds.org/pipermail/ipaq/2000-Auguest/000061.html</a></li>
+</ul>
+
+<p></p>
+
+<h3>Preparation:</h3>
+<ol>
+  <li>Plug your iPAQ into the serial port of your Windows machine using a
+    serial cable.</li>
+  <li>Run your terminal emulator on whatever machine can talk to your serial
+    port with the settings of: 115200 8N1 (115200 baud, 8 bits, No Parity, 1
+    stop bit) and Flow control: 'None'.</li>
+  <li>While booting the iPAQ, in your terminal emulator, hit the <em>space
+    </em>key on your keyboard on your machine: you should see a
+    '<strong>boot&gt;'</strong> prompt. You can type '<em>help</em>' at the
+    bootloader at the '<strong>boot&gt;</strong>' prompt to get a list of
+    commands.</li>
+</ol>
+
+<A name="updating-the-bootldr"><h3>Updating the Bootldr</h3></a>
+
+If you are not running bootldr 2.14.5, then please update at this point.  These instructions 
+depend on the use of bootldr 2.14.5.
+
+<ol>
+  <li><em>This one step is dangerous: do so with the unit under AC power (so
+    that even if your battery happened to fail that instant, it wouldn't
+    matter).</em> At the '<strong>boot&gt;</strong>' prompt, type '<em>load
+    bootldr</em>', then start an xmodem download of the file <a
+    href="/pub/linux/compaq/ipaq/v0.20/bootldr-0000-2.14.5">bootldr-0000-2.14.5</a>.
+    A <a
+    href="/pub/linux/compaq/ipaq/v0.20/bootldr-2.14.5.tar.gz">bootldr
+    tarball </a>corresponding exactly to these boot loader bits is available. 
+    Note this is a new version of the bootloader, which should work better
+    with some xmodem implentations and worth updating.</li>
+  <li>Your iPAQ will say "<strong>verifying ... done.</strong>". The loader
+    program has a simple sanity check in it (it verifies a checksum contained
+    in the bootldr file) to ensure that only a bootloader can get installed
+    into flash at the iPAQ's bootloader's address.</li>
+  <li>Be paranoid. Make sure the bootldr flash sector is protected.  If the 
+    the bootldr is protected, then 
+    <ul>
+      <li><tt>qflash 2</tt></li>
+    </ul>  
+    will print <tt>00010001</tt>.</li>
+    <p>
+    Otherwise, protect the flash sector manually.</li>
+    <ul>
+      <li><tt>pflash 0 0xffff 1</tt></li>
+    </ul>
+  </li>
+
+  <li>Now type the <strong><em>reset</em></strong> command or push the
+  recessed reset button at the lower right of the iPAQ to restart it
+  into the new bootldr.</li>
+</ol>
+
+<A name="updating-linux"><h3>Updating Linux</h3></a>
+<ol>    
+  <li>At the '<strong>boot&gt;</strong>' prompt, type '<strong><em>load
+    params</em></strong>', then start an xmodem download of the file <a
+    href="/pub/linux/compaq/ipaq/v0.20/params-v20.bin">params-v20.bin</a>.
+    When finished with the download, you will see "Erasing, Writing, Verifying
+    flash" messages.</li>
+  <li>At the '<strong>boot&gt;</strong>' prompt, type '<strong><em>load
+    kernel</em></strong>', then start an xmodem download of the file <a
+    href="/pub/linux/compaq/ipaq/v0.20/zImage-2.4.0-rmk2-np1-hh1">zImage-2.4.0-rmk2-np1-hh1</a>.
+    When finished with the download, you will see "Erasing, Writing, Verifying
+    flash" messages. <a
+    href="/pub/linux/compaq/ipaq/v0.20/linux-2.4.0-rmk2-np1-hh1.tgz">A
+    kernel tarball corresponding exactly to these kernel bits is
+    available</a>.</li>
+  <li>At the '<strong>boot&gt;</strong>' prompt, type '<em>load init</em>',
+    then start an xmodem download of the file <a
+    href="/pub/linux/compaq/ipaq/v0.20/init-2-70.cramfs">init-2-70.cramfs</a>.
+    This takes approximately 2 minutes. When finished with the download, you
+    will see "Erasing, Writing, Verifying flash" messages.</li>
+  <li>At the '<strong>boot&gt;</strong>' prompt, type '<em>load root</em>', 
+    then start an xmodem download of the file <a
+    href="/pub/linux/compaq/ipaq/v0.20/root-2-57.cramfs">root-2-57.cramfs</a>.
+    This takes approximately 5 minutes. When finished with the download, you
+    will see "Erasing, Writing, Verifying flash" messages.</li>
+  <li>At the '<strong>boot&gt;</strong>' prompt, type '<em>load usr</em>', 
+    then start an xmodem download of the file <a
+    href="/pub/linux/compaq/ipaq/v0.20/usr-2-61.cramfs">usr-2-61.cramfs</a>.
+    This takes approximately 10 minutes. When finished with the download, you
+    will see "Erasing, Writing, Verifying flash" messages.</li>
+  <li>At the '<strong>boot&gt;</strong>' prompt, type '<em>eflash usrlocal</em>'. 
+  <li>At the '<strong>boot&gt;</strong>' prompt, type '<em>boot</em>'.</li>
+  <li>At the <strong>(none) login: </strong>prompt, type '<em>root</em>'</li>
+  <li>At the prompt, type '<em>mkfs -t ext2 /dev/mtdblock6</em>'</li>
+  <li>At the prompt, type '<em>mount /usr/local</em>'. This will allow you to
+    use /dev/mtdblock6 as /usr/local for persistent storage. Please note that
+    you may only make one hundred thousand (100,000) writes to a particular
+    sector of flash.</li>
+</ol>
+
+<p>Congratulations! You should be up and running.</p>
+
+<p></p>
+
+<p>Note: if you need to get back into the boot loader after you have Linux
+running, restart the iPAQ and quickly hit the space bar a few times during the
+boot process. You can restart the iPAQ with the Linux command <em>shutdown -r 
+now.</em></p>
+
+<p></p>
+
+<p style="text-align: left">If you have any problems, please post to one of the followig lists:</p>
+<p style="text-align: left">General problems with setup, installation, user-land software or configuration: <a href="mailto:ipaq@handhelds.org">ipaq@handhelds.org</a>.</p>
+<p style="text-align: left">Issues believed to be related to the kernel: <a href="mailto:linux@handhelds.org">linux@handhelds.org</a>.</p>
+<p style="text-align: left">Thank you.</p>
+
+<p style="text-align: left"></p>
+
+<p style="text-align: left">Modified <em>Friday May 11th, 2001</em></p>
+
+<p style="text-align: left">Please send comments on this document to Jamey Hicks (<a href="mailto:jamey.hicks@compaq.com">jamey.hicks@compaq.com</a>).</p>
+
+<p></p>
+</body>
+</html>

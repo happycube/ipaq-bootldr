@@ -1,0 +1,639 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+                      "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html">
+  <title>handhelds.org -- bootldr</title>
+  <link href="about.html">
+  <link href="handhelds.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<h1 align="left"><!--text starts here-->
+                Bootldr</h1>
+
+                <h2><a name="Introduction">Introduction</a></h2>
+
+                <p>The bootloader firmware (bootldr)  is the program that
+                first gets control of the machine when it is powered on.   The
+                bootloader initializes and manages the raw hardware.  One of
+                its main jobs is to copy the operating system from
+                non-volatile memory (Flash) to DRAM and pass control to the
+                operating system.  The bootloader performs platform specific
+                hardware configuration for the operating system, such as
+                steering interrupts on the PCI devices (on Skiff only).</p>
+
+                <p>In addition, the bootloader provides a simple command-line
+                interface that allows the user to download new versions of the
+                operating system, user code, and parameters into Flash via the
+                XMODEM or YMODEM protocols.</p>
+
+                <p>The following is the list of bootloader commands.</p>
+
+                <h2><a name="Command List">Command List</a></h2>
+                <dl>
+                  <dt><strong>help</strong></dt>
+                    <dd>The help command lists all the supported commands
+                      along with a very brief description of their
+                    syntax.</dd>
+                    <dd><code>help</code></dd>
+                    <dd><code>help &lt;cmdname></code></dd>
+                    <dd><code>&lt;cmdname> help</code></dd>
+                  <dt><strong>load</strong></dt>
+                    <dd>The <code>load</code> command downloads files into
+                      DRAM or Flash using the XMODEM or YMODEM protocol.
+		      The most common uses of <code>load</code> are to
+		      install new versions of the kernel, user code, or the
+		      bootloader itself.  The syntax for these forms is
+		      shown below:
+                      <dl>
+                        <dt><a name="load kernel"><code>load
+                        kernel</code></a></dt>
+                          <dd>This command will install a new version of the
+                            NetBSD or Linux kernel (uncompressed or compressed
+                            with gzip).  The kernel file can be up to 30800192
+                            bytes. (3MB - 64KB).</dd>
+                        <dt><a name="load bootldr"><code>load
+                        bootldr</code></a></dt>
+                          <dd>Installs a copy of the bootloader (which may be
+                            up to 48KB). <strong>Use with extreme
+                            caution</strong>.   If a non-functional bootloader
+                            is installed, the bootloader will have to be
+                            reinstalled via the JTAG Test Access Port.</dd>
+                        <dt><a name="load ramdisk"><code>load
+                        ramdisk</code></a></dt>
+                          <dd>Installs a copy of the linux initial ramdisk
+                            (which may be up to 3MB).  Only for use with
+                            Linux.</dd>
+                        <dt><a name="load params"><code>load
+                        params</code></a></dt>
+                          <dd>Installs up to 16KB of boot parameters.  One
+                            parameter stored in this section is the serial
+                            port baudrate.</dd>
+                       <dt><a name="load jffs"><code>load 
+                       jffs</code></a></dt>
+                         <dd>Installs a Journalling Flash File System
+                           image. Only available when JFFS support has
+                           been compiled in.</dd>
+                        <dt><code>load flash &lt;flashoffset>
+                        &lt;size></code></dt>
+                          <dd>This is an advanced command.  Downloads a file
+                            to Flash at the indicated offset from the start of
+                            Flash.  Erases all the affected sectors. Use with
+                            caution, because it is possible to inadvertently
+                            overwrite the kernel or ramdisk using this
+                            command..</dd>
+                      </dl>
+                    </dd>
+                  <dt><strong>boot</strong></dt>
+                    <dd>Invokes the operating system.  It automatically
+                      detects whether the kernel is gzipped and whether it is
+                      Linux or NetBSD.  This command can be used in four
+                      ways, the first being the most common:
+                      <dl>
+                        <dt><code>boot</code></dt>
+                          <dd>Invoke the operating system installed in
+                          Flash.</dd>
+                        <dt><a name="boot flash"><code>boot
+                        flash</code></a></dt>
+                          <dd>Invoke the operating system installed in
+                          Flash.</dd>
+                        <dt><code>boot nfsroot</code></dt>
+                          <dd>With Linux installed, this directs it to boot
+                            and mount an NFS root filesystem.</dd>
+                       <dt><code>boot jffs</code></dt>
+                         <dd>Boots a kernel from the JFFS flash
+                           partition. See <a
+                           href="#bootldr.conf">below</a> for details
+                           on kernel selection. The special form,
+                           <code>boot&nbsp;jffs&nbsp;?</code>
+                           displays a list of available kernels. Only
+                           available when JFFS support has been
+                           compiled in.</dd>
+                      </dl>
+                    </dd>
+                  <dt><strong>show</strong></dt>
+                    <dd>Shows the bootloader parameters and their values. 
+                      Shorthand for <code>params show</code></dd>
+                  <dt><strong>set</strong></dt>
+                    <dd>Sets bootloader parameters. Use <code>show</code> to
+                      see the parameters and their values.</dd>
+                  <dt><strong>params</strong></dt>
+                    <dd><dl>
+                        <dt><code>params reset</code></dt>
+                          <dd>Reset the bootldr parameters to their
+                          defaults</dd>
+                        <dt><code>params show</code></dt>
+                          <dd>Show all the parameters and their values.</dd>
+                        <dt><code>params eval</code></dt>
+                          <dd>Evaluate all the bootldr commands in the params
+                            sector (prefixed with bootldr:, e.g.,</dd>
+                          <dd><code>  bootldr: set nfsroot
+                            /tftpboot/root.skiff</code></dd>
+                        <dt><code>params save</code></dt>
+                          <dd>Saves bootldr parameters to flash (currently
+                            overwrites any non-bootldr parameters in the
+                            params section.  See <a href="#load params">load
+                            params</a>)</dd>
+                      </dl>
+                    </dd>
+                 <dt><strong>peek jffs</strong></dt>
+                   <dd>Examines files in the Journalling Flash File
+                     System partition. Only available when JFFS
+                     support has been compiled in. There are two
+                     forms of this command:
+                     <dl>
+                       <dt><code>peek jffs
+                         <em>&lt;inumber&gt;</em></code></dt>
+                         <dd>Sweeps the filesystem and displays raw
+                           inodes having the given inode number on the
+                           terminal. Does not reconstruct any files,
+                           nor does it even initialize the filesystem
+                           (if not already initialized).</dd>
+                       <dt><code>peek jffs
+                         <em>&lt;absolutepath&gt;</em>
+                         <em>&lt;length&gt;</em></code>
+                         <dd>Reconstructs the file named by
+                         <em>&lt;absolutepath&gt;</em> and displays
+                           the first <em>&lt;length&gt;</em> bytes of
+                           that file in hexadecimal and ASCII on the
+                           terminal.</dd>
+                     </dl>
+                    </dd>
+                  <dt><strong>peek ram</strong></dt>
+                    <dd>Reads 4 bytes from the specified address (using the
+                      bootloader's virtual to physical address mapping) and
+                      displays in hexadecimal.</dd>
+                  <dt><strong>poke ram</strong></dt>
+                    <dd>Writes 4 bytes to the specified address (using the
+                      bootloader's virtual to physical address mapping). This
+                      command can crash the system, but it should cause no
+                      lasting damage.</dd>
+                  <dt><strong>eflash</strong></dt>
+                    <dd>This is an advanced command. Erases the specified
+                      sector of Flash.  Use with extreme caution.  If the
+                      bootldr is erased, then the machine will be
+                    unusable.</dd>
+                  <dt><strong>physaddr</strong></dt>
+                    <dd>Shows the physical address for the specified virtual
+                      address.</dd>
+                 <dt><strong>ls</strong>
+                   [<em>&lt;absolutepath&gt;</em>]</dt>
+                   <dd>Lists information about the file or directory
+                     named by the single argument (or the filesystem
+                     root, if no argument is given). Only available
+                     when JFFS support has been compiled in.</dd>
+                 <dt><strong>md5sum</strong>
+                   <em>&lt;absolutepath&gt;</em></dt>
+                   <dd>Computes the MD5 message digest of the file
+                     named by the single argument. Only available
+                     when JFFS and MD5 support have been compiled
+                     in.</dd>
+                 <dt><strong>histogram</strong></dt>
+		   <dd>Displays a distribution of JFFS or JFFS2
+		     inodes in the flash device.</dd>
+                </dl>
+
+                <h2><a name="BootldrParams">Bootldr Params</a></h2>
+
+		<dl>
+		<dt><strong>baudrate</strong></dt>
+		<dd>This parameter controls the baudrate of the serial port
+		used for communication with the unit.  Once the value has
+		been changed, the serial port must be adjusted accordingly
+		on the host side.</dd>
+
+		<dt><strong>boot_type</strong></dt>
+		<dd> This specifies the root filesystem when booting Linux.
+		<dl>
+		  <dt><tt>flash</tt></dt><dd>ramdisk or cramfs in flash</dd>
+		  <dt><tt>nfsroot</tt></dt><dd>Root filesystem mounted via NFS.</dd>
+                  <dt><tt>jffs</tt></dt><dd>Journalling Flash File
+                    System partition. Only available when JFFS support
+                    has been compiled in.</dd>
+		</dl>
+		</dd>
+
+                <dt><strong>boot_file</strong></dt>
+                <dd>This specifies the default boot label or the name
+                  of a file to boot from the Journalling Flash File
+                  System partition. See <a
+                  href="#bootldr.conf">below</a> for more
+                  information. Only available when JFFS support is
+                  compiled in.</dd>
+
+                <dt><strong>conf_file</strong></dt>
+                <dd>This specifies the name of a bootldr configuration
+                  file on the Journalling Flash File System
+                  partition. See <a href="#bootldr.conf">below</a> for
+                  more information. Only available when JFFS support
+                  is compiled in.</dd>
+
+		<dt><strong>download_kernel</strong></dt>
+		<dd>If set to a nonzero value, then the <code>boot</code>
+		command will boot a kernel it downloads into DRAM via
+		XMODEM or YMODEM rather than booting the kernel in flash.
+		</dd>
+
+		<dt><strong>kernel_in_ram</strong></dt>
+		<dd>If set to a nonzero value, then the <code>boot</code>
+		command will jump to the location specified here rather
+		than copying the kernel image from flash to DRAM and
+		booting it.
+		</dd>
+
+		<dt><strong>force_unzip</strong></dt>
+		<dd>No longer used.
+		</dd>
+
+		<dt><strong>noerase</strong></dt>
+		<dd><em>Advanced command.</em> Inhibits the erasing of
+		flash before programming.  Assumes flash was manually
+		erased using the eflash command.
+		</dd>
+
+		<dt><strong>override</strong></dt>
+		<dd><em>Advanced command.  Use of this command may render
+		the system unusable.</em>  Enables any location in flash to
+		be programmed using the <code>load flash</code> command.
+		</dd>
+
+		<dt><strong>entry</strong></dt>
+		<dd><em>Advanced command.</em> The DRAM address into which the kernel is loaded.
+		</dd>
+
+		<dt><strong>copy_ramdisk</strong></dt>
+		<dd><em>Advanced command.</em> Set this to zero when using
+		a cramfs if the bootldr attempts to treat the cramfs image
+		as an initial ramdisk. Also set to zero if using JFFS.
+		</dd>
+
+		<dt><strong>ramdisk_addr</strong></dt>
+		<dd><em>Advanced command.</em> Takes effect when the
+		value of <code>copy_ramdisk</code> is nonzero. Set
+		this to zero when using a cramfs. If using an ext2
+		ramdisk, set to the location in RAM where the image
+		should be located before booting the kernel; for most
+		SA-1100 systems, this location is
+		<code>0xc0800000</code>.
+		</dd>
+
+		<dt><strong>dcache_enabled</strong></dt>
+		<dd>Set to 0 to disable the data cache and to 1 to enable the
+		data cache.  This variable does not affect the kernel's
+		choice of whether or not to enable the data cache.
+		</dd>
+
+		<dt><strong>icache_enabled</strong></dt>
+		<dd>Set to 0 to disable the data cache and to 1 to enable the
+		instruction cache.  This variable does not affect the kernel's
+		choice of whether or not to enable the instruction cache.
+		</dd>
+
+		<dt><strong>maclsbyte</strong></dt>
+		<dd>On Skiff, this reports the least significant byte of
+		the ethernet address.
+		</dd>
+
+		<dt><strong>dram_size</strong></dt>
+		<dd><em>Advanced command.</em>This variables shows the
+		autodetected DRAM size and is used to indicate to the kernel how much memory is
+		available.
+		</dd>
+
+		<dt><strong>linuxargs</strong></dt>
+		<dd>The command line arguments to pass to the Linux kernel
+		when booting, in addition to any passed on the command line
+		to the <code>boot</code> command.
+		</dd>
+
+		<dt><strong>hostname</strong></dt>
+		<dd>When set, is passed on the command line to override
+		Linux IP hostname autoconfiguration via the <code>ip=...</code> option.
+		</dd>
+
+		<dt><strong>ipaddr</strong></dt>
+		<dd>When set, is passed on the command line to override
+		Linux IP address autoconfiguration via the <code>ip=...</code> option.
+		</dd>
+
+		<dt><strong>gateway</strong></dt>
+		<dd>When set, is passed on the command line to override
+		Linux IP default gateway autoconfiguration via the <code>ip=...</code> option.
+		</dd>
+
+		<dt><strong>netmask</strong></dt>
+		<dd>When set, is passed on the command line to override
+		Linux IP netmask autoconfiguration via the <code>ip=...</code> option.
+		</dd>
+
+		<dt><strong>nfs_server_address</strong></dt>
+		<dd>When set, is passed on the command line to override
+		Linux IP autoconfiguration via the <code>ip=...</code> option.
+		</dd>
+
+		<dt><strong>nfsroot</strong></dt>
+		<dd>When set, is passed on the command line to override
+		Linux IP autoconfiguration via the <code>ip=...</code> option.
+		</dd>
+
+		<dt><strong>verbose</strong></dt>
+		<dd>Currently has no effect.
+		</dd>
+
+		<dt><strong>ymodem</strong></dt>
+		<dd>When set, serial transfers are performed using the
+		YMODEM protocol. This has the advantage of using a
+		more robust integrity check (CRC16 versus arithmetic
+		sum) during transmission. In addition, if MD5 support
+		has been configured, the MD5 sum of the transferred
+		file is displayed. If this parameter has the value
+		<code>0</code> (default), transfers occur using the
+		XMODEM protocol.
+		</dd>
+		</dl>
+
+
+                <h2><a name="Params">Params</a></h2>
+
+                <p>The Params region of flash contains customization variables
+                used by the bootldr and kernel.  Each line is prefixed by a
+                keyword and colon, indicating the consumer of the data.  Users
+                may add their own prefixes and extract the data from flash at
+                runtime using fu, grep, and cut.</p>
+
+                <p>The only defined keywords are <strong>bootldr</strong> and
+                <strong>profile</strong>.   Lines prefixed with "bootldr:" are
+                read and evaluated as bootldr commands beforing booting a
+                kernel.  Lines prefixed with "profile:" are read and sourced
+                by the NetBSD .profile.</p>
+
+                <p>It is easiest to manage the params section by using the
+                params command described above, but this only works if the
+                bootldr is the only software using the params section.</p>
+
+               <h2><a name="MachineSupport">Machine Support</a></h2>
+
+               <p>Please read the machine-specific notes for your
+               hardware.</p>
+
+               <h3><a name="Assabet">Intel Assabet and Neponset</a></h3>
+
+               <p>Support for the Intel StrongARM SA-1110
+               Microprocessor Development board (<em>Assabet</em>)
+               and the Intel StrongARM SA-1111 Microprocessor
+               Development Module (<em>Neponset</em>) was added on 22
+               November, 2000.</p>
+
+               <p>The <em>Assabet</em> hardware is similar to
+               <em>Bitsy</em> in a number of ways that are relevant
+               to the bootldr, such as memory initialization or the
+               use of SA-1110 on-chip UARTs for serial
+               communication. One special convention which is
+               described in the hardware manuals for the development
+               boards concerns UART selection: when <em>Assabet</em>
+               is used alone, UART1 is the main console serial
+               port. When <em>Neponset</em> is present, UART3
+               (accessible via port J20 on the companion board)
+               becomes the console port (and the <em>Assabet</em>
+               RS232 transceiver is shut down).</p>
+
+               <p>The bootldr is aware of the presence or absence of
+               <em>Neponset</em> when running on <em>Assabet</em>,
+               and configures the appropriate UART. The Linux kernel
+               also respects this convention, and includes the same
+               companion board detection logic. The default bit rate
+               for either UART is 115200bps; make sure that your
+               kernel and userland programs (such as <em>getty</em>)
+               are configured appropriately.</p>
+
+               <p>The <em>Assabet</em> bill of materials claims that
+               the board is shipped with Intel 28F128J3A
+               (StrataFlash) flash memories. Some configurations of
+               the board actually include the smaller 28F160B3 boot
+               block flash components, for a total bank 0 size of
+               4MB. The bootldr includes support for both parts.</p>
+
+               <p>When compiling bootldr for <em>Assabet</em>, be
+               sure to edit the file <code>config.mk</code> to
+               include the definition,
+               <code>CONFIG_ARCH=assabet</code>.</p>
+
+               <h2><a name="JFFS">Journalling Flash File System</a></h2>
+
+               <p>Support for the Journalling Flash File System
+               (JFFS) was added on 22 November, 2000.</p>
+
+               <p>The bootldr provides the ability to access and boot
+               from a JFFS partition on flash memory. This feature
+               can be useful because it permits easy upgrades of the
+               kernel, and because it eliminates the need for a
+               separate kernel partition in the flash device. A user
+               may simply provide the name of the boot image in the
+               filesystem, and the bootldr will construct the file in
+               main memory, then execute it.</p>
+
+               <p>JFFS is a log-structured filesystem which is <a
+               href="http://handhelds.org/z/wiki/JFFS">documented on
+               the handhelds.org Wiki</a>. The log-based nature of
+               the filesystem requires the bootldr to "replay" a list
+               of updates to any file before use. The unsorted
+               sequence of updates on flash necessitates a "scan" of
+               the device before the filesystem can be accessed. This
+               scan occurs once during the first filesystem access,
+               and is not repeated unless the bootldr reprograms the
+               JFFS partition. Note that the scan is only performed
+               to determine final file metadata, such as file size or
+               name; no files are actually reconstructed until asked
+               for. Once a file is reconstructed (for any reason),
+               the built file is cached in memory and is not
+               reconstructed for subsequent accesses. Commands which
+               cause file reconstruction include
+               <code>boot&nbsp;jffs</code>,
+               <code>peek&nbsp;jffs</code> (with a pathname
+               argument), and <code>md5sum</code>. Note that
+               <code>peek jffs</code> with an inode number argument
+               does not cause any reconstruction to occur.</p>
+
+               <p>When writing a JFFS image (such as one constructed
+               by <em>mkfs.jffs</em>) to the flash memories, it is
+               recommended that the image be padded with
+               <code>0xff</code> bytes out to the size of the
+               partition. JFFS does not include an end-of-log
+               delimiter, and can accidentally misinterpret logs left
+               over from an earlier filesystem at the end of the
+               device. These "left over" logs can confuse the
+               bootldr, which will refuse to replay any filesystem it
+               finds to be inconsistent.</p>
+
+               <p>If you suspect that the bootldr has improperly
+               reconstructed a file, such as a kernel image, use the
+               <code>md5sum</code> command to compare against a known
+               correct message digest. If the digests do not match,
+               find the inumber of the file by using the
+               <code>ls</code> command, and then send the output of
+               <code>peek&nbsp;jffs&nbsp;<em>&lt;inumber&gt;</em></code>
+               to <a href="mailto:john+@cs.cmu.edu">John Dorsey</a>,
+               along with a text history of the actions which have
+               been performed on that file.</p>
+
+               <h2><a name="bootldr.conf">bootldr.conf</a></h2>
+
+               <p>Support for <em>bootldr.conf</em> was added on 26
+               November, 2000.</p>
+
+               <p>There are two ways to boot a kernel from a
+               Journalling Flash File System partition: specify a
+               bootable file in the filesystem, or provide the label
+               of a boot image block from a configuration file. The
+               former approach is straightforward; simply set the
+               bootldr param <code>boot_file</code> to the absolute
+               path of a bootable image (or pass the filename to
+               <code>boot&nbsp;jffs</code>). The latter approach
+               offers easier customization, as the entire boot
+               configuration can be edited while the operating system
+               is running; only a reboot is necessary to pick up the
+               changes.</p>
+
+               <p>Boot configuration is based on the contents of a
+               file in the JFFS flash partition. The name of this
+               file is stored in the bootldr param
+               <code>conf_file</code>, and by default has the value
+               "<code>/etc/bootldr.conf</code>". The contents of this
+               file will be familiar to users of <em>lilo</em>, as
+               the syntax and keywords were all taken directly from
+               the Linux Loader used on the i386 architecture. Here
+               is an example file:</p>
+
+               <blockquote><code>
+               <p>default=linux</p>
+               
+               <p>read-write</p>
+
+               <p>image=/boot/zImage-test<br />
+               <blockquote>
+               label=test<br />
+               root=/dev/mtdblock1<br />
+               read-only<br />
+               literal="noinitrd console=0"<br />
+               </blockquote></p>
+
+               <p>image=/boot/zImage<br />
+               <blockquote>
+               label=linux<br />
+               alias=good<br />
+               root=/dev/mtdblock1<br />
+               append="console=0"<br />
+               </blockquote></p>
+
+               </code></blockquote>
+
+               <p>As with <em>lilo</em>, the configuration file is
+               partitioned into sections. Any directives up to the
+               first <code>image</code> keyword become part of the
+               global scope, and will apply to any image block unless
+               overshadowed. Image blocks contain directives which
+               apply only to the kernel named in the
+               <code>image</code> statement. All directives within an
+               image block are scoped to that image until a new image
+               block begins with an <code>image</code> statement.</p>
+
+               <p>In general, keywords can appear in either global or
+               image scope. The exceptions are <code>default</code>
+               (which can only be global) and <code>literal</code>
+               (which can only be image-local). When a keyword is
+               used in both global and image-local scope, the local
+               value overshadows the global value. The exception is
+               <code>append</code>, which simply appends the local
+               value to the global value when building the kernel
+               argument list.</p>
+
+               <p>Only one directive may appear per line. Other than
+               this constraint, whitespace is ignored when parsing
+               the file. (The indentation in the example file is only
+               used to improve readability.) To preserve spaces (or
+               the character `<code>=</code>', which has a special
+               meaning during tokenization) in string literals,
+               enclose them in quotation marks.</p>
+
+               <p>The <code>boot_file</code> param can be set to the
+               label or alias of an image to boot. If this param has
+               no value, then the first image parsed will be booted
+               by default, unless another image is specified using
+               the <code>default</code> keyword.</p>
+
+               <p>The accepted keywords are described below. The
+               legal scopes of each keyword are denoted by
+               <strong>G</strong> for global, and <strong>L</strong>
+               for image-local.</p>
+
+               <dl>
+
+               <dt><strong>default</strong> (G)</dt>
+               <dd>Specify the label or alias of the default image to
+                 boot.</dd>
+
+               <dt><strong>image</strong></dt>
+               <dd>Specify the absolute path of a bootable file in
+                 the filesystem. Begins a new image scope block.</dd>
+
+               <dt><strong>label</strong> (L)</dt>
+               <dd>Specify a name by which this image block will be
+                 known. At most one label can be applied per
+                 block.</dd>
+
+               <dt><strong>alias</strong> (L)</dt>
+               <dd>Specify an alternative name by which this image
+                 block will be known. At most one alias can be
+                 applied per block.</dd>
+
+               <dt><strong>read-only</strong> (GL)</dt>
+               <dd>Indicate that the root filesystem should be
+                 mounted read-only by passing "<code>ro</code>" as a
+                 kernel argument. Overrides
+                 <code>read-write</code>.</dd>
+
+               <dt><strong>read-write</strong> (GL)</dt>
+               <dd>Indicate that the root filesystem should be
+                 mounted read-write by passing "<code>rw</code>" as a
+                 kernel argument.</dd>
+
+               <dt><strong>ramdisk</strong> (GL)</dt>
+               <dd>Specify the integer size in kilobytes of kernel
+                 ramdisks by passing the "<code>ramdisk_size</code>"
+                 argument.</dd>
+
+               <dt><strong>root</strong> (GL)</dt>
+               <dd>Specify the name of the device which contains the
+                 root filesystem by passing the "<code>root</code>"
+                 kernel argument.</dd>
+
+               <dt><strong>append</strong> (GL)</dt>
+               <dd>Specify a string of kernel arguments to be
+                 appended to any others generated during boot
+                 configuration.</dd>
+
+               <dt><strong>literal</strong> (L)</dt>
+               <dd>Specify a string of kernel arguments to use <em>in
+                 place of</em> any others generated during boot
+                 configuration. This essentially causes any other
+                 keywords to be ignored, and also overrides most
+                 bootldr params which would otherwise result in the
+                 generation of kernel arguments. Use with
+                 caution.</dd>
+
+               </dl>
+
+               <p>A list of available image labels or aliases can be
+               obtained with the command
+               <code>boot&nbsp;jffs&nbsp;?</code>. Comments about the
+               configuration syntax or the interpreter code should be
+               sent to <a href="mailto:john+@cs.cmu.edu">John
+               Dorsey</a>.</p>
+
+                <address>
+                $Date: 2002/02/13 20:36:13 $ $Author: jamey $
+                </address>
+</body>
+</html>

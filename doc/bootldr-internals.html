@@ -1,0 +1,148 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+                      "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>No title</title>
+  <meta name="GENERATOR" content="amaya V2.4">
+  <link href="handhelds.css" rel="stylesheet" type="text/css">
+  <meta http-equiv="Content-Type" content="text/html">
+</head>
+
+<body>
+<h1>Bootldr Internals Documentation</h1>
+
+<p>Copyright 2000 Compaq Computer Corporation.</p>
+
+<p></p>
+
+<p>Copying or modifying this code for any purposes is permitted, provided that
+this copyright notice is preserved in its entirety in all copies or
+modifications.  COMPAQ COMPUTER CORPORATION MAKES NO WARRANTIES, EXPRESSED OR
+IMPLIED, AS TO THE USEFULNESS OR CORRECTNESS OF THIS CODE OR ITS FITNESS FOR
+ANY PARTICULAR PURPOSE.</p>
+
+<h2>Prinicipals of Operation</h2>
+
+<p>The bootldr is firmware -- it is the first code executed by the processor
+when it comes out of reset, whether reset was induced by turning on power to
+the device or by hitting the reset switch.</p>
+
+<p>The first word of the bootldr image is loaded at the beginning of Flash so
+that it will be executed when the processor comes out of reset.  Usermode
+programs and even the kernel have some other program that interprets the
+executable and loads the code into memory at the appropriate point.  These
+often have executable file headers that describe where to load them into
+memory.  The bootldr does not have this luxury -- it is the one that loads the
+kernel.  For this reason, the Makefile for the bootldr does some funny things
+to ensure that the first word of the bootldr is a valid instruction.</p>
+
+<h3>Memory Mapping</h3>
+
+<p>With one exception, the bootldr uses a linear identity mapping from virtual
+to physical addresses.</p>
+
+<p>The exception is that the first 1MB of Flash is copied into DRAM, and the
+virtual address corresponding to the first 1MB of Flash is mapped to this
+image in DRAM.</p>
+
+<p>This is done in mmu-strongarm.c, before setting up the MMU the bootldr
+copies itself into DRAM .</p>
+
+<p>Flash and DRAM are mapped cacheable, and bufferable.</p>
+
+<p>The second exception to the identity virtual->physical mapping is that a
+second uncacheable mapping is created for Flash.  This is necessary so taht
+the bootldr can program flash.  However, booting the kernel is faster if there
+is a  cacheable image of Flash to read the kernel and possibly ramdisk from.
+Since we boot more often than write flash,  it's the uncached image that is
+non-identity.</p>
+
+<h3>DRAM Partitions</h3>
+
+<table border="1">
+  <caption>Bootldr DRAM Partitions</caption>
+  <tbody align="center">
+    <tr>
+      <th>Start</th>
+      <th>Length</th>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+    <tr>
+      <td>0</td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>0x00d0 0000</td>
+      <td>0x0020 0000</td>
+      <td>Bootldr heap</td>
+    </tr>
+    <tr>
+      <td>0x00f0 0000</td>
+      <td>0x0004 0000</td>
+      <td>DRAM image of bootldr</td>
+    </tr>
+    <tr>
+      <td>0x01f4 0000</td>
+      <td>0x0000 4000</td>
+      <td>Page table </td>
+    </tr>
+    <tr>
+      <td>0x00f4 4000</td>
+      <td>0x0003 c000</td>
+      <td>Stack</td>
+    </tr>
+    <tr>
+      <td>0x00f8 0000</td>
+      <td>0x0008 0000</td>
+      <td>Transfer buffer</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Signature of the Bootldr</h3>
+
+<p>The bootldr contains a number of elements that identify it as a valid,
+uncorrupted bootldr.</p>
+<dl>
+  <dt>BOOTLDR_MAGIC (0x646c7462)</dt>
+    <dd>Identifies this file as a bootldr.  It appears at offset 0x20 because
+      this is the first free location after the exception vector jump
+    table.</dd>
+  <dt>BOOTLDR_VERSION</dt>
+    <dd>Identifies the version number of the bootldr image</dd>
+  <dt>BOOTLDR_START</dt>
+    <dd>Specifies where this bootldr should be loaded in memory.  This is used
+      to distinguish between bootldr images for SA110/Footbridge and SA1100,
+      which have Flash at different offsets.  We should probably add
+      BOOTLDR_ARCHITECTURE.</dd>
+</dl>
+
+<h3>Safeguards</h3>
+
+<p>After linking, the bootldr image is padded with bytes so that the checksum
+of the image is zero.  It is padded with zeros to a multiple of 128 bytes so
+that the checksum of the image after xmodem download is still zero.</p>
+
+<h2>Bootldr Commands</h2>
+
+<p>[ to be written ]</p>
+
+<h2>Structure of the Source Code</h2>
+
+<p>[to be written]</p>
+
+<p></p>
+
+<p></p>
+
+<p></p>
+</body>
+</html>

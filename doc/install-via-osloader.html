@@ -1,0 +1,313 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+                      "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>iPaq H3600 Handhelds.org Bootloader Installation Instructions</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+
+<body lang="en">
+<h1 style="text-align: center">iPaq H3600/H3100 Handhelds.org Bootloader Installation Instructions</h1>
+
+<ul>
+<li>  <strong><em>The instructions for installing on an H3100 are now the same as for an H3600.</em></strong>
+<li>  <strong><em>The H3800 is not supported at this time.  </em></strong>
+<li>  <strong><em>Installing from PocketPC 2002 or PocketPC 2002 Beta are not supported at this time.</em></strong>
+</ul>
+<h2>WARNINGS:</h2>
+<ul>
+  <li><h3>If this installation fails then your iPAQ could become
+    (temporarily) unusable.</h3>
+    <p>This version is less likely than the previous installation processes to
+    result in an installation failure. We are trying very hard to make this
+    procedure bullet proof, and we think we're very close with the boot
+    loader. The boot loader can not get over not get overwritten by accident
+    now. Some additionial bug is certainly possible, but we think it is
+    unlikely.   If you have not upgraded your boot loader to version 2.14.15,
+    please do so immediately.</p>
+
+    <p><em>Compaq Research will ensure that you do not permanently
+    turn your iPAQ into a paperweight</em>, but it is
+    <em><b>very</b></em> inconvenient for all of us if we have to fix
+    a unit that was rendered nonbooting by a failed installation (or
+    WinCE restoration).</p>
+
+  </li>
+  <li><h3>Windows CE Restoration</h3>
+
+    <p>If you save an image of your Windows CE software as described
+    in the <a
+    href="http://www.handhelds.org/projects/wincerestoration.html">WinCE
+    restoration instructions</a> then you will be able to restore it
+    again after installing Linux.
+
+    <p>The restoration process is not simple.  It is error-prone.  But
+    it is available.  We will help anyone who has trouble with it.
+
+    <p>We are working on an improved process, but it is not ready yet.
+
+    <p> WinCE has been successfully restored by many people on
+    many different iPAQs. The current status of the save / restoration
+    of WinCE is available at <a
+    href="http://www.handhelds.org/projects/wincerestoration.html">http://www.handhelds.org/projects/wincerestoration.html</a>.</p>
+
+  </li>
+  <li><h2>Notes and Recommendations</h2>
+    <ul>
+      <li>Some web browser's default download settings is 'ASCII' mode instead
+        of 'binary' mode, this will make the downloaded files corrupt.  For
+        example, Netscape requires that you hold down the shift key when you
+        click on an item for downloading in 'binary' mode.
+        <p><strong>WARNING</strong>:  Please verify the 'md5sum' of any file
+        before using.</p>  See <A
+        href="http://www.handhelds.org/z/wiki/md5sum">md5sum</a> for
+        pointers to md5sum executables for Windows.
+      </li>
+      <li>If you are going to be using minicom, there is a timing issue. If
+        minicom starts to NAK repeatedly, stop the download Wait for the
+        second '.' to print, then type ctrl-c.  Retype the command at the boot
+        loader prompt followed by a &lt;cr>, then ctrl-a, z, s, select xmodem,
+        , &lt;cr>, &lt;cr>. This will restart the down load very quickly and
+        avoid the timing issues.
+        <p></p>
+      </li>
+      <li> Unless you really really know what you are doing do not mix kernels,
+      ramdisk and cramfs files from different V0.?? releases. Each V's can
+      have different memory mappings.
+      </li>
+      <li>See <a
+      href="http://www.handhelds.org/z/wiki/What%20is%20the%20current%20status%20of%20Linux%20on%20the%2031xx%20iPAQs">Linux
+      on the H3100/H3150/H3130 Monochrome iPAQ Handheld</a> for up-to-date
+      notes on installing Linux on the Monochrome iPAQ Handheld.
+      </li>
+      <p>
+      The bootldr encapsulated in osloader 1.5.6 has been disabled, so the 
+      "<em>Tools->Bootldr->Run"</em> menu entry will not work.
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h3>Requirements:</h3>
+<ul>
+  <li>A computer that runs Windows 95/98/2000/NT. A few people have installed
+    Linux on the iPAQ using a Linux computer.  There are Linux conectivity
+    instructions at <a
+    href="http://www.handhelds.org/minihowto/wince-link/index.html">http://www.handhelds.org/minihowto/wince-link/index.html</a>
+    and <a
+    href="http://www.handhelds.org/pipermail/ipaq/2000-August/000061.html">
+    http://www.handhelds.org/pipermail/ipaq/2000-Auguest/000061.html</a>
+    <ul>
+      <li>Install the ActiveSync application (Async) from the iPAQ H3600
+        Pocket PC distribution CD that came with your unit onto your Windows
+        system.</li>
+      <li>You will also be using HyperTerminal (or other terminal emulator
+        capable of the xmodem protocol, such as minicom on Linux.</li>
+    </ul>
+  </li>
+  <li>The following files from <a
+    href="ftp://ftp.handhelds.org/pub/linux/compaq/ipaq/v0.20/">ftp://ftp.handhelds.org/pub/linux/compaq/ipaq/v0.20/:</a>
+    <ul>
+      <li><a
+        href="ftp://ftp.handhelds.org/pub/linux/compaq/ipaq/v0.20/bootldr-2.14.15">bootldr-2.14.15</a></li>
+      <li><a
+        href="ftp://ftp.handhelds.org/pub/linux/compaq/ipaq/v0.20/bootldr-2.14.15.md5sum">bootldr-2.14.15.md5sum</a></li>
+      <li><a
+        href="ftp://ftp.handhelds.org/pub/linux/compaq/ipaq/v0.20/wince-bootldr.bin">wince-bootldr.bin</a></li>
+      <li><a
+        href="ftp://ftp.handhelds.org/pub/linux/compaq/ipaq/v0.20/wince-bootldr.bin.md5sum">wince-bootldr.bin.md5sum</a></li>
+      <li><a
+        href="ftp://ftp.handhelds.org/pub/linux/compaq/ipaq/v0.20/osloader-1.5.6.exe">osloader-1.5.6.exe</a></li>
+      <li><a
+        href="ftp://ftp.handhelds.org/pub/linux/compaq/ipaq/v0.20/osloader-1.5.6.exe.md5sum">osloader-1.5.6.exe.md5sum</a></li>
+    </ul>
+  </li>
+  <li>
+  The instructions for installing on an H3100 are now the same as for an H3600.
+  </ul>
+  </li>
+   <li>iPAQ H3600/H3100 with a serial cable (USB is NOT supported at this time). For
+    those of you that can not wait for a serial cable, Peter Monta has
+    instructions for a home made cable which invalidates the warrenty on the
+    base station at <a
+    href="http://www.handhelds.org/pipermail/ipaq/2000-August/000061.html">
+    http://www.handhelds.org/pipermail/ipaq/2000-Auguest/000061.html</a></li>
+</ul>
+
+<p></p>
+
+<h3>Installation:</h3>
+<ol>
+  <li>Plug your iPAQ into the serial port of your Windows machine using a
+    serial cable.</li>
+  <li>Configure your iPAQ to use the serial port for ActiveSync.
+    <ul>
+      <li>Select settings from the Start Menu (the Microsoft flag icon)</li>
+      <li>Click the Connections tab, and then double-click the PC icon.</li>
+      <li>Ensure the <em>Automatically synchronize when serial cable is
+        connected using</em> is checked<em>.</em></li>
+      <li>Change <em>USB</em> to <em>115200 Default.</em></li>
+      <li>Click OK (top right of the screen).</li>
+    </ul>
+  </li>
+  <li>Use the ActiveSync application (the file name is Async.exe) to connect
+    to your iPaq 3600 from you PC.</li>
+  <li>Copy  <a
+    href="ftp://ftp.handhelds.org/pub/linux/compaq/ipaq/v0.20/osloader-1.5.6.exe">osloader-1.5.6.exe</a>
+    to your iPaq from your Windows machine. Ignore the "may need to convert"
+    message you will get.</li>
+  <li>On your iPaq H3600, find osloader-1.5.6.exe wherever you put it, and then
+    execute osloader-1.5.6.</li>
+
+<a name="savingwince"><h4>Backing Up WinCE</h4></a>
+
+  <li>Select the <em>Tools->Flash->Save to files....</em> Four (4) files, 4MB
+    each in size will be created. After each file is created, copy the file to
+    your computer, then delete the file from the iPAQ to make room in the
+    WinCE ramdisk for the next file. The current status of the save /
+    restoration of WinCE is available at <a
+    href="http://www.handhelds.org/projects/restorationwince.html">http://www.handhelds.org/projects/wincerestoration.html.</a></li>
+    <p>
+    The files will be saved in the <tt>My Device</tt> folder -- the root
+    folder on the device.  They will have filenames:
+    <tt>flash_00000000.bin</tt>, <tt>flash_00400000.bin</tt>,
+    <tt>flash_00800000.bin</tt> and <tt>flash_00c00000.bin</tt>.
+
+<a name="drambootldr"><h4>Running the bootldr from DRAM</h4></a>
+
+  <li>The bootldr encapsulated in osloader 1.5.6 has been disabled, so the 
+      "<em>Tools->Bootldr->Run"</em> menu entry will not work.  It will just
+      freeze the ipaq, causing the screen to go blank.
+      </li>
+  <li>Copy <tt>wince-bootldr.bin</tt> to the <tt>My Documents</tt> folder on the iPAQ.
+        You do not need to rename it.
+  </li>
+  <li>Select the "<em>Tools->Bootldr->RunFromFile"</em> menu entry. </li>
+  <li>You should now see the bootldr splash screen. </li>
+  <li>On the PC disconnect the ActiveSync application (it is holding onto the
+    serial port you need).
+    <ul>
+      <li>On the PC, right click on the ActiveSync logo in the tooltray.</li>
+      <li>Select the Connections Settings.</li>
+      <li>Deselect Allow serial cable or infrared connection to this COM
+      port.</li>
+    </ul>
+  </li>
+  <li>You may have trouble getting ActiveSync to free your serial port. You
+    might want to use some more friendly operating system to run minicom or
+    eterm or,...</li>
+  <li>Run your terminal emulator on whatever machine can talk to your serial
+    port with the settings of: 115200 8N1 (115200 baud, 8 bits, No Parity, 1
+    stop bit) and Flow control: 'None'.</li>
+  <li>In your terminal emulator, hit the <em>enter </em>key on your keyboard
+    on your machine: you should see a '<strong>boot>'</strong> prompt. You can
+    type '<em>help</em>' at the bootloader at the '<strong>boot></strong>'
+    prompt to get a list of commands.</li>
+
+<a name="installingbootldr"><h4>Installing the Bootldr</h4></a>
+
+  <li><em>This step is dangerous: make sure you perform it exactly
+    correctly.</em> At the '<strong>boot></strong>' prompt, type '<em>load
+    bootldr</em>', then start an xmodem download of the file <a
+    href="ftp://ftp.handhelds.org/pub/linux/compaq/ipaq/v0.20/bootldr-2.14.15">bootldr-2.14.15</a>.
+  <p>
+    See <a href="http://www.handhelds.org/sources.html">handhelds.org sources</a> for access to 
+    the bootldr source code.
+  <li>Your iPAQ will say "<strong>verifying ... done.</strong>". The loader
+    program has a simple sanity check in it to try to ensure that only a
+    bootloader can get installed into flash at the iPAQ's bootloader's
+    address.  If there is an RXSTAT error, you can ignore it if there "verifying ... done" 
+    was printed.  Otherwise, repeat the <strong>'load bootldr'</strong> step.   </li>
+    
+<a name="quickcheck"><h4>Check the Install</h4></a>
+
+  <li>At this point, the new bootldr is installed in flash.  You can
+  spot check the bootldr installation before rebooting by executing
+  the command <strong>peek flash 0x0</strong>, which should print
+  <strong>EA00008E</strong>.  Also check <strong>peek flash
+  0x20</strong>, which should print <strong>646C7462</strong>.  If
+  either of these prints <strong>FFFFFFFF</strong>, then the bootldr
+  is erased.  <em>Be very careful.  Do not reset the unit.  Do not power
+  cycle it.  Make sure it is plugged in.</em>  Reload the bootldr.  If
+  there are any error messages email ipaq@handhelds.org or use IRC to
+  connect to irc.openprojects.net channel #ipaq or #handhelds.org for
+  assistance.
+    
+  <p>  
+
+
+  <p>OK, now take a deep breath.  Assuming you had no error messages,
+  you are past the only risky part of the install.
+  <p>
+
+<a name="reboot"><h4>Reboot the iPAQ</h4></a>
+
+  <li>Reboot your iPaq H3600 by pushing the recessed reset button at
+    the lower right of the unit.  If the iPAQ is in a cradle, you will have
+    to remove it to do this step.  The boot loader should come up and
+    display a splash screen on the LCD.  Put the iPAQ back in the
+    cradle.  At this point, either type a space in the terminal
+    emulator or push the calendar button on the iPAQ to get the
+    bootldr's prompt "boot>".
+    <p>
+    Don't be worried if the message "Corrupt kernel image", because you
+    don't have a kernel installed yet. <em>Whew! You are through the
+    risky part of the procedure</em>.</li>
+
+    <p>
+
+  <li>Now sure the bootldr flash sector is protected!  If  
+  <ul>
+  <li><tt>qflash 2</tt>
+  </ul>
+  does not print
+  <ul>
+  <li><tt>00010001</tt> for an H3600, or
+  <li><tt>00000001</tt> for an H3100 
+  </ul>
+  at this point, then contact the mailing list familiar@handhelds.org or
+  IRC chat irc.openprojects.net /join #handhelds.org or #familiar.  <em>Do
+  not use the pflash command.</em>
+
+  <p>
+
+<a name="finished"><h4>The Installation is Complete!</h4></a>
+  <li>
+   Congratulations!  At this point you have a working bootloader and you are
+   ready to install a Linux distribution.  The latest Linux distribution for
+   the iPAQ H3600 series is available at <a
+   href="http://familiar.handhelds.org">http://familiar.handhelds.org</a> and
+   can be installed using the instructions at <a
+   href="http://familiar.handhelds.org/familiar/releases/latest/install/H3600/install.html">http://familiar.handhelds.org/familiar/releases/latest/install/H3600/install.html</a>.
+   The older <a href="http://handhelds.org">Handhelds.org Linux
+   Distribution</a> which was last updated in March of 2001 and is not likely
+   to see any further updates can be installed by following the instructions
+   at <A href="update.html">update.html</a>.  All future effort will be
+   directed towards building the <a
+   href="http://familiar.handhelds.org">Familiar Distribution</a>.
+
+</ol>
+
+<a name="bootldrprompt"><h4>Getting to the Bootldr Prompt</h4></a>
+<ul><li>if you need to get back into the boot loader after you have Linux
+running, restart the iPAQ and quickly hit the space bar a few times during the
+boot process. You can restart the iPAQ with the Linux command <em>shutdown -r
+now.</em>
+</li></ul>
+
+<p></p>
+
+<p style="text-align: left">If you have any problems, please post to one of the followig lists:</p>
+<p style="text-align: left">General problems with setup, installation, user-land software or configuration: <a href="mailto:ipaq@handhelds.org">ipaq@handhelds.org</a>.</p>
+<p style="text-align: left">Issues believed to be related to the kernel: <a href="mailto:linux@handhelds.org">linux@handhelds.org</a>.</p>
+<p style="text-align: left">Thank you.</p>
+
+<p style="text-align: left"></p>
+
+<p style="text-align: left">Modified <em>Monday October 1, 2001</em></p>
+
+<p style="text-align: left">Please send comments on this document to Jamey Hicks (<a href="mailto:jamey.hicks@compaq.com">jamey.hicks@compaq.com</a>).</p>
+
+<p></p>
+</body>
+</html>

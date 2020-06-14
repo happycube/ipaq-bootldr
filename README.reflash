@@ -1,0 +1,27 @@
+Press the record button to start the reflash utility.
+
+Because this is kind of dangerous, it is locked out in normal operation.
+Access to the reflash utility is only enabled if you were holding down
+the action button during reset (ie, not a normal boot).
+
+It looks for a flash card and reads reflash.ctl from the root directory.
+Each line of this file needs to look a bit like:
+
+GPE    bootgpe.jffs2    bootgpe.jffs2.md5sum    root	platform
+
+where the fields are, in order:
+
+ - the display name that will be shown to the user
+ - the name of the image file
+ - the name of the md5sum file
+ - the target partition name
+ - the platform type to which this applies
+
+The image may be compressed, in which case the md5sum can be omitted by
+putting "-" in the relevant field.
+
+If platform is not specified, the image will be offered on all platforms.
+If set to "h3600", it will be offered on iPAQ 3600/3700/3800.
+If set to "h3900", it will be offered on iPAQ 3900 only.
+If set to "h3100", it will be offered on iPAQ 3100 only.
+

@@ -1,0 +1,16 @@
+If someone were to accidentally create an image in gimp (320x240x8b/color)
+accidentally save it as a .pnm file,
+accidentally put that .pnm name in os_<osname>.mk and then
+accidentally type rm -f splashz_linux.h && make splashz_linux.h && make
+they might change their splash screen!
+
+So, please, BE CAREFUL.
+
+Also, for the accident prone, you can play with images by using
+$ make splashz_linux
+and
+boot> lcdzimg <sizeof-splashz-file>
+
+After you change your splash screen, you might want to edit aux_micro.c - change screen_region_t regions[] and key_info_t key_info_tab[] to reflect your new splash screen.
+
+The progress bar is controlled in load_kernel/src/jffs2.c - play with the #defined constants LCD_PB_COLOR and LCD_PB_ROW. If you want to change the orientation of the progress bar, you'll need to mess with lcd.c.

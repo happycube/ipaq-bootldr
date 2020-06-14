@@ -1,0 +1,734 @@
+LATEST STABLE BOOTLDR IS 2.18.54
+LATEST EXTREMELY STABLE BOOTLDR IS 2.18.01
+
+2.21.12: jamey 03-nov-03
+  -- built bootldr with arm-linux-gcc 2.95.3 for sa1110 ipaqs
+2.21.10:
+2003-09-24 18:33  tag BOOTLDR_2_21_10
+2003-09-24 18:33  jamey
+	* Makefile: 2.21.10
+2003-09-24 18:30  nelson
+	* vfat.c: Dang!  I thought I'd checked this fix in.  This fixes the
+	  "file not found" error, or at least it did some months ago.
+2003-09-24 12:46  bavery
+	* Makefile, params.h, pcmcia.c: fixed the linuxargs to be 2.4.19
+	  compliant, reduced some verbosity
+2003-09-23 11:37  bavery
+	* Makefile, bootldr.c, btflash.c, ide.c, params.h, pcmcia.c,
+	  pcmcia.h, serial.c: aded skiff fixes for timer,pcmcia and ide.
+2003-09-23 11:31  bavery
+	* skiff.h:  skiff specific stuff
+2003-09-17 15:46  bavery
+	* load_kernel/src/Makefile:  also work with config.local.mk
+2003-09-17 15:46  jamey
+	* Makefile: define SHORT_ARCH_STR for skiff
+2.21.2: 2003-09-17 13:35  bavery
+	* load_kernel/src/: Makefile, jffs2.c: skiff updates, allowed arch
+	  flags to reach here and use them to ifdef out lcd spec stuff.
+	* serial.c:  skiff updates - made structures for skiff
+	* sa1100.h:  skiff updates
+	* params.h: skiff updates
+	* os_linux.mk: removed LINUX_DIR as it is unused and confuses gcc
+	  3.2.3 also, added an auto detect to where zlib is so it works off
+	  of the existing toolchain. i.e. it looks in the base dir of
+	  arm-linux-gcc /arm-linux/{include,lib} for the zlib stuff
+	* mmu-pxa.c: added PXA: to mmu message so we know which is which
+	* flashif.c: skiff updates
+	* config.mk: skiff updates, added some info to help know what
+	  setting to use
+	* btpci.c: skiff updates
+	* btflash.c: skiff updates esp make atmel CB flash sectors right
+	* bootlinux.c:	skiff updates includeing the dc21285: for mtdparts
+	* bootldr.c, bootldr.h: skiff updates
+	* boot.s:  skif updates, added assembeler based serial print for
+	  debugging and added boot_flag space to teh stack
+	* Makefile, boot_flags.h, bootcmds.c, bootconfig.h: skiff updates
+2.20.5:
+2003-09-17 13:04  bavery
+	* Makefile: made a bogus miro version 5 to provide a tag point
+	  before the large skiff checkin
+
+2003-09-06 15:00  joshua
+	* serial.c: RXSTAT error stuff removed. If you want it back,
+	  compile with -DCONFIG_CONFUSE_USERS.
+
+2003-08-25 14:11  joshua
+	* bootldr.c: memtest2 and prelim 1900
+
+2003-08-25 14:09  joshua
+	* Makefile: -DCONFIG_USB, not CONFIG_USB.
+
+2003-07-23 07:52  jamey
+	* bootldr.c: updated help strings to indicate receive by ymodem or
+	  xmodem
+
+2003-07-08 08:50  jamey
+	* architecture.h: added XDA_MACH
+
+2003-07-03 10:54  pb
+	* boot-pxa.s: change ldrh to ldr to avoid addressing range problems
+
+2003-07-03 10:45  jamey
+	* Makefile: updated makefile to include -sa or -pxa in bootldr
+	  binary file names
+
+2.20.4: 2003-07-03 10:40  jamey
+	* CHANGELOG, Makefile, boot-sa1100.s: roll back to boot-sa1100.s to
+	  avoid making bricks
+
+2003-06-28 14:20  joshua
+	* boot-pxa.s: boot-pxa update for h1910
+	* boot-pxa.s: we can now check action button on 1910
+
+2003-06-18 21:40  joshua
+	* boot-pxa.s: Checked in boot-pxa.s which can detect h1900.
+	  ***WARNING WARNING!*** THIS CODE MAY NOT WORK AND MAY FAIL TO
+	  BOOT! Please test this with ram-bootldr BEFORE flashing to your
+	  device!
+	* boot_flags.h, bootldr.c, bootldr.h: added defines for h1900 and
+	  axim in headers. now to implement..
+	* Makefile: fixed USB so that enabling it doesn't break PXA builds.
+	* asm-arm/arch-pxa/: h1900-gpio.h, h3900-irqs.h: added gpios for
+	  h1900
+	* asm-arm/arch-pxa/: axim-gpio.h, h3900-gpio.h: added axim-gpio.h
+	* asm-arm/arch-pxa/pxa-regs.h: oops. stupid __REG.
+	* asm-arm/arch-pxa/pxa-regs.h: synched pxa-regs.h up to kernel.
+	* dma-sa1100.c, usb-sa1110.c: it seems I have changes that I never
+	  committed.
+
+2.20.3: jamey 03-JUL-03
+  -- rollback boot-sa1100.s to the version from 2.19.73 because it was
+  bricking some h3600's.  Will try to come up with a better solution
+  when I have one of the bricks to debug with.
+2.20.2: pb 06-JUN-03
+  -- support action button on h5400
+2.20.1: jamey 13-MAY-03
+  -- update to 2.20.x to declare stability
+  -- major new bootldr hacking will be in linux as bootldr
+USE AT YOUR OWN RISK!!!!
+2.19.76: pb 29-APR-03
+  -- use ATAG_INITRD2 for initrd so that addresses work out right on pxa.
+2.19.75: pb 25-APR-03
+  -- added extra (optional) machine-type column to reflash.ctl.
+  -- tolerate reflash.ctl not ending with newline.
+  -- correct left/right joypad confusion on h3900.
+  -- fix pxa cache-flushing code.  enable both I & D caches as standard on h3900.
+  -- mark RAM non-bufferable on pxa in deference to writeback cache errata.
+2.19.74: jamey 23-APR-03
+  -- changed boot-sa1100.s to use same SDRAM config values (MDCNFG and MDREFR) as Linux
+  -- applied patch from disconnect for initial reflash save support' reflash.c
+  -- reduced verbosity of flash_iohandle_prewrite
+  -- allow tabs as well as spaces in reflash.ctl
+2.19.73: joshua 9-APR-03
+  -- usb send over DMA works for real. sorry.
+2.19.72: joshua 5-APR-03
+  -- jamey's cut-n-paste-happyness in CHANGELOG fixed
+  -- usb send support :)
+2.19.71: jamey 25-MAR_03
+ -- dual bank probe_ram works on h3900 with dual sdram banks, but
+    DABT's on single bank h3900.
+2.19.70: joshua 15-MAR-03
+  -- experimental USB support added.
+2.19.69: jamey 14-MAR-03
+  -- build with -march=armv4 so that flashif.c will work with 16bit
+     flash
+  -- check for armv4 option
+  -- set flashword = UNCACHED_FLASH_BASE in ram bootldr
+2.19.68: jamey 14-MAR-03
+  -- debugged support for reflashing bootldr, hopefully it is pretty safe.
+  -- enable ymodem by default
+2.19.67: jamey 13-MAR-03
+  -- add support for reflashing bootldr, including validating bootldr
+     image for architecture
+2.19.66: pb 7-MAR-03
+  -- reflash can handle multiple entries in one md5sum file.
+2.19.65: jamey 6-MAR-03
+  -- LCD working again on h3900 but h5400 buzzing incessantly
+  -- verified action button detection working on h3900
+  -- Joshua Wise added a label for reflash to the splash screen.
+2.19.64: jamey 6-MAR-03
+  -- LCD working again on h3900 but h5400 buzzing incessantly
+2.19.63: jamey 6-MAR-03
+  -- boot-pxa.s now detects either h5400 or h3900, so one bootldr
+     works on both
+  -- unfortunately, LCD stopped working on h3900.
+2.19.62: pb 2/28/03
+  -- go back to checking action button rather than power button on
+     H3900, since the latter interferes with suspend.
+2.19.61: pb 2/27/03
+  -- print a more useful diagnostic if division by zero occurs
+  -- add some validity checking to vfat code
+  -- re-enable SDRAM size probe
+  -- try to make reflash.ctl parser more tolerant of line endings
+2.19.60: jamey 2/20/03
+  -- iohandle.c: suppressed printing of .\n's in copy to flash
+2.19.59: jamey 2/20/03
+  -- changed isValidBootldr not to check for parrot if it is bootldr
+     but wrong arch, addr, or checksum
+  -- added ipcom patch to support multiple flash banks, needs work for
+     h3900 and h5400 but it's a start
+  -- added definition of H3900_ASIC3_ID_BASE to autodetect h5400/h3900
+2.19.48: 
+2.19.57: jamey 2/6/03
+  -- started h5400 porting
+  -- added patch to wait for RTC to stabilize on SA1100
+  -- some cleanup
+2.19.56: pb 12/11/02
+  -- remove setting of green LED in boot-pxa.s, unnecessary now screen works
+2.19.55: pb 12/08/02
+  -- initialise ASIC2 GPIODIR on h3800, h3900
+  -- default to 16 bit ide buffer reading
+  -- use slower default pcmcia timings for pxa
+2.19.54: pb 12/07/02
+  -- reinstate disabling of mmu, etc, in boot-pxa.s::bootLinux
+  -- can boot pocketpc on h3900 now
+2.19.53: pb 12/06/02
+  -- fix parsing problem with reflash.ctl
+  -- reflash supports .gz images now; md5sum not required for those
+  -- enable "boot wince" on pxa
+  -- ifdef out redundant crc32 implementation
+  -- support ctrl-u on serial console cmdline
+2.19.52: pb 11/27/02
+  -- write dram_size0 in probe_ram_size.  I think this will fix the problem
+     with only 32MB SDRAM being reported on StrongARM machines.  Dual bank
+     support still looks like it is broken.
+  -- configure MSC0 on pxa to make flash accesses faster
+2.19.51: pb 11/25/02
+  -- more powerful syntax for reflash.ctl, largely untested
+  -- 3900 version compiles again now, whoops
+  -- fix buffer overrun in SA-1100 lcd driver
+  -- honour params setting for autoboot time on pxa
+2.19.50: pb 11/24/02
+  -- add support for YMODEM-g ("set ymodem_g 1")
+2.19.49: pb 11/22/02
+  -- turn on 3600 frontlight too
+  -- write MSC1/2 in boot-sa1100.s to get them right during resume.
+  -- embedded reflash seems to work now.
+2.19.48: pb 11/21/02
+  -- turn on 3900 frontlight
+  -- start implementing embedded reflash support
+  -- support sleeves and PCMCIA on 3900
+2.19.47: pb 11/17/02
+  -- light up 3900 green LED during boot to stop users thinking they 
+     have bricks.
+  -- first cut at LCD/front panel button support for 3900
+2.19.46: pb 11/15/02
+  -- add ability to read/write sector buffer either 8 or 16 bits at a time
+     via  'ide 8bit' and 'ide 16bit' commands
+2.19.45: pb 11/14/02
+  -- add more data sections to linker script so DRAM copy works right.
+2.19.44: pb 11/14/02
+  -- suspend/resume works on pxa now
+2.19.43: pb 11/12/02
+ more pxa changes:
+  -- set up GPIOs earlier; check action rather than power button.
+  -- first cut at resuming from sleep, almost certainly not sufficient.
+2.19.42: pb 11/11/02
+  -- implement "reset" command on pxa
+  -- copy wince partition check code from boot-sa1100.s to boot-pxa.s
+  -- allow pxa to autoboot Linux if power button not held down
+2.19.41: pb 11/06/02
+  -- on pxa, select turbo mode and execute FCS after configuring clocks
+2.19.40: cdm 11/03/02
+  -- Fixed the boot_qnx command to use bootLinux() to properly manage
+     the i+d caches and pipeline flushing.  Removes the UDEF exceptions.
+  -- Fixed some other misc. QNX build issues due to recent changes.
+  -- Added in a NO_HILITE_BUTTON macro in aux_micro.c to stop buttons
+     presses from inverting areas of the screen.
+2.19.39: ??  ??/??/02
+  -- Empty log message for the changes not yet logged.
+2.19.38: jamey 10/17/02
+  -- make sure vioh->vfat is initialized in vfat.c
+  -- pass $(CROSS_COMPILE)$(CC) to load_kernel/src/Makefile
+  -- remove old mtdpart= support and add rootfstype param
+2.19.37: jamey 10/17/02
+  -- copied in updated vfat code from stable branch
+2.19.36: jamey 10/17/02
+  -- added code to enable uart transceiver on h3800
+2.19.35: jamey 10/16/02
+  -- added a print of a couple of characters on resume to debug resume hang
+2.19.34: jamey 10/16/02
+  -- added a couple more debug messages in vfat
+2.19.33: jamey 10/8/02
+  -- CONFIG_ARCH_PXA seemed to conflict with gcc internal symbols, so back
+     to CONFIG_PXA, etc
+2.19.32: jamey 10/8/02
+  -- for each architecture SA110, SA1100, PXA, use CONFIG_aaa
+  -- for each machine type, use CONFIG_MACH_mmm 
+2.19.31: jamey 10/3/02
+  -- removed deprecated atag ptable code
+2.19.30: jamey 10/2/02
+  -- added jffs2 source/sink and ide partition source/sink for the copy
+     command, e.g., 
+        copy root:/etc/passwd hda1:/etc/passwd
+        copy root hda1
+        copy root hda1:root.img
+2.19.29: rescinded
+2.19.26: jamey 9/04/02
+   -- removed requirement that MMU be enabled for PXA ARCH 
+      (see MaybeCopyToDRAM in boot-pxa.s)
+2.19.25: cdm 9/03/02
+   -- QNX boot logic moved from boot_kernel to command_boot_qnx().
+   -- Fixed up QNX location macros to be based from DRAM and FLASH BASE.
+2.19.24:  bavery 8/21/02
+	-- pxa version boots linux kernel (doesnt come all the way up but it does boot it) 
+	-- have caches turned off again since they seemed a bit unhappy in the flushing/off routine 
+2.19.23:  bavery 8/21/02
+	-- pxa version can write to flash...
+2.19.22:  bavery 8/21/02
+	-- fixed pxa cversion to get to prompt.
+2.19.21:  bavery 8/21/02
+	-- pxa version of bootloader comes up to the prompt :)
+	-- alot of !ifdefs added to allow the pxa to build -- some errors WILL result
+	-- allowed CONFIG_LCD=n to build
+2.19.18: jamey 8/17/02
+        -- added a probe_ram command for dual dram bank ipaqs 
+        -- fixed code in bootlinux that was disabling bank0 instead of bank1
+2.19.17: bavery 8/17/02
+        -- backed out dual bank sdram stuff from bootldr.c so the splash
+           screen comes back  
+2.19.15: jamey
+        -- added code to pass in second dram bank params to linux 
+        -- aux micro cleanup
+2.19.zz: bavery 8/12/02
+        -- pxa250 full function uart can now send characters 
+2.19.08: jamey for vaibhav
+        -- cleaned up SA1100 entries to unify with PXA250 
+2.19.07: jca 8/5/02
+	-- rest of dynamic jornada56x machine detection merge
+2.19.06: jamey 8/2/02
+        -- incorporated jca's code for dynamic jornada56x machine detection
+        -- CONFIG_MACH_IPAQ now includes jornada56x
+2.19.04: jamey 8/2/02
+        -- added code to unmount and eject the sleeve before jumping to kernel in boot_vfat 
+2.19.03: bavery 8/1/02
+        -- some h3900 work.  do not use the h3900 build unless you have jtag set up 
+2.19.02: jamey 7/30/02
+        -- added param boot_vfat_partition, which says which ide partition
+        to mount vfat on when booting vfat.  Numbered from zero.
+        -- renamed param use_mtdparts to use_mtd_cmdline
+        -- changed param use_mtd_cmdline to default to 1.  Requires
+        drivers/mtd/cmdline.c in linux kernel.   
+2.19.01: jamey 7/8/02
+	-- applied jornada720 patch from jca
+2.19.00: jamey 7/8/02
+        -- started adding pxa250 xscale support
+============================================================
+2.18.55: does not recognize flash on h3100
+2.18.54: jamey 10/17/02
+        -- make sure vioh->vfat gets initialized. 
+2.18.53: jamey 10/17/02
+        -- fixed bug comparing attr when should have looked at name[0]
+        -- introduced struct vfat_iohandle to clean up ioh->pdata for vfat iohandles 
+2.18.52: jamey 10/17/02
+        -- reduce vfat verbosity with debug
+2.18.51: jamey 10/17/02
+        -- more verbose debug message
+2.18.50: jamey 10/16/02
+	-- added some debug messages to vfat_find_file_in_dir 
+2.18.49: jamey 6/12/02
+	-- added a command to load backpaq fpga
+2.18.49: jamey 6/6/02
+        -- removed the crc checking when scanning jffs2, got a 6 fold
+	   speedup in one test case
+2.18.48: jamey 6/6/02
+        -- applied patch to ide that swaps bytes in ide strings
+2.18.47: jamey 6/6/02
+	-- added jffs2 read command
+2.18.46: cdm 6/3/02
+	-- updated for qnx 
+2.18.45: jamey 5/17/02
+	-- one more tweak to the fix to the patch to fix both vfat read and write 
+2.18.44: sachac 5/8/02
+        -- fixed vfat copy and write again.
+2.18.43: jamey 5/7/02
+        -- applied sacha's long filename fix 
+2.18.42: sachac 4/23/02
+        -- copy command seems to work both ways. Have fun. 
+2.18.41: jamey 4/23/02
+        -- copy command seems to be working from vfat to flash but not vice versa
+2.18.40: jamey 4/23/02
+        -- stopped modifying PWER because we think PocketPC2002 uses it to
+           detect resume 
+        -- some serial.c cleanups
+2.18.39: jamey 4/18/02
+        -- added copy command, which does not quite work yet
+        -- modified vfat commands so that they do the sleeve insert, pcmcia
+           insert, vfat mount automatically
+        -- added some more error checking to the vfat commands   
+2.18.38: jamey 4/9/02
+        -- have vfat read/write print how many bytes were read/written 
+        -- 'load <partname>' prints an error if partition is undefined.
+2.18.37: jamey 4/5/02
+        -- initialize MSC1 and MSC2 so that we can be sure to control the gpio's 
+        -- I think this fixes the bricking problem that arose in 2.18.22
+2.18.36: jamey 4/3/02
+	-- gpio tweaks to make sure RS232 transceiver is working
+        -- sleeve on command for debug 
+2.18.35: jamey 3/29/02
+	-- silenced flash write for h3100 
+	-- sachac and disconnect made a new splash screen
+2.18.34: jamey 3/28/02
+        -- make sure egpio initially turns on RS232
+        -- do not initialize sleeve or pcmcia if we might be in safe mode  
+2.18.33: jamey 3/28/02
+        -- included George G. Davis's patch to force use of formatted sector size (Jamey)
+2.18.32: sachac 3/28/02
+        -- fixed boot vfat [filename] [args...] bug 
+2.18.31: sachac 3/28/02
+        -- added IDE and VFAT write support (no reclustering)
+2.18.30: sachac 3/27/02
+        -- added VFAT long filename support
+2.18.29: jamey 3/26/02
+        -- added sector_size to struct iohandle
+        -- debugging other cf flash cards
+        -- cleaned up cis read code  
+2.18.28: jamey 3/26/02
+        -- trying new wince cookie value
+        -- use egpio code backported from h3600 linux module
+2.18.27: sachac 3/26/02
+        -- added lcdzfile command in jffs2_commands.c, suggested by prh (no bounds checking)
+        -- added params splash_filename and splash_partition that control custom splash
+        -- removed lcdimg command (tends to crash bootloader)
+2.18.26: jamey 3/21/02
+        -- stopped writing to PSPR because it interfered with suspend/resume on H3800 
+        -- fixed declaration of serial in serial.h and usage in bootldr.c (now a pointer)
+2.18.25: jamey 3/20/02
+        -- removed dependence on linux source tree
+        -- moved linux booting support to bootlinux.c
+2.18.24: jamey 3/19/02
+        -- added fat12 support
+        -- have SUBCOMMAND prepend cmd and subcmd onto help string
+2.18.23: sachac 3/18/02
+        -- moved to new command execution machinery
+        -- moved serial support to serial.c 
+        -- started ir uart implementation
+        jamey 3/18/02
+        -- added struct serial_device
+        -- added h3800_get_option_detect to hal.c  
+2.18.22: jamey 3/15/02
+        -- have vfat mount fail immediately for FAT12
+        -- added param use_new_commands to select new command execution
+           machinery written by sachac
+        -- COMMAND and SUBCOMMAND macros now declare prototypes   
+2.18.21: jamey 3/11/02
+        -- do not modify MSC1 or MSC2, these should be handled by kernel drivers
+2.18.20: jca via jamey 3/8/02
+        -- added jornada 56x support.  Not ready for testing by others. 
+2.18.19: sachac via jamey 3/8/02
+	-- added more command and subcommand declarations 
+2.18.17: sachac via jamey 3/7/02
+        -- added command definition similar to the new param structure,
+        -- enables definition of commands in files other than bootldr.c
+2.18.16: jamey 3/6/02
+        -- fixed passing of initrd at 0xc02080000
+2.18.15: jamey 3/5/02
+        -- boot vfat takes precedence over implicit boot wince 
+2.18.14: jamey 3/5/02
+        -- bound Q button to 'boot vfat'
+2.18.13: jamey 3/5/02
+        -- debugged vfat directory and file reading
+        -- added 'boot vfat' command
+2.18.12: jamey 3/4/02
+        -- was able to boot ide using 2.4.3 kernel and initrd supplied by Tangent (but no rootfs)
+2.18.11: jamey 3/4/02
+	-- applied cleanups from jca@alum.mit.edu (split some btflash functions into flashif.c)
+2.18.10: jamey 3/3/02
+        -- applied correction from Jim Pick for reading partition tables
+	   from flash
+2.18.9: jamey 3/1/02
+	-- change 'boot ide' not to read initrd partition if noinitrd is in linuxargs
+2.18.8: jamey 2/14/02
+        -- added pspr_wince_cookie to keep track of whether to resume wince
+           or else just to jump to pspr on resume (i.e., linux)
+        -- made 'boot ide' take preference over booting wince from flash
+        -- started work on vfat   
+2.18.07: jamey 2/12/02
+        -- fixed partition truncation problem in ide_read_partition
+        -- added 'program partition srcaddr' command to program flash from dram
+2.18.06: jamey 2/12/02
+        -- dual pcmcia sleeve detected and controlled
+        -- pcmcia_insert() implemented
+        -- pcmcia_insert() automatically calls ide_attach()
+        -- 'boot ide' command does not require 'sleeve insert' and 'pcmcia insert' commands.  
+2.18.05: jamey 2/7/02
+        -- now passes initrd from second partition on disk
+2.18.04: jamey 2/7/02
+        -- boot ide will now read dos-partition-table from ide, and boot zImage from first partition on drive  
+2.18.03: jamey 2/6/02
+        -- pcmcia cis read implemented, detects ide funcid
+        -- first cut at ide implementation, partition table reading 
+2.18.02: jamey 1/30/02
+        -- applied jornada720 patch from jca@alum.mit.edu
+2.18.00: bavery 1/22/02
+	-- transposed the 3600 display so its orientation
+		matches everyone elses.
+2.18.00: bavery 1/17/02
+	--Feature version change to indicate gzip support
+	--help system fixed
+	--debug style menu commands hidden behind a DEBUG_BOOTLDR_CMDS flag
+	--new splash command including the action button hint
+******************************************************************
+2.17.23: bavery 1/10/02
+	-- added the ability to download gzipped images to flash.
+		This only works with load <partition> currently.
+2.17.22: Jamey Hicks 1/10/02
+	 -- added pcmcia memory and io mapping routines
+	 -- added power control for single CF and PCMCIA sleeves
+	 -- implemented struct list_head according to usage in sleeve driver 
+2.17.21: Jamey Hicks 1/10/02
+	 -- added code to configure sdram bank1 (for 256MB ipaqs) (off by default)
+	 -- added constraints to bootldr.ld.in per George Davis -- to
+	 reduce size of bootldr when built with other (montavista?) toolchain
+2.17.20: Brian Avery 1/8/02
+	-- latch 1 button nicely during the jffs2 scan
+2.17.19: Jamey Hicks 1/7/02
+        - split array of bootldr params into separate declarations
+        - bootldr ld script collects them (they can be in separate files)
+        - PARAM() macro can be used to define them
+        - get_param("name") -> &param_name
+        - get_param_value("name", &var) -> var = param_name.value
+2.17.18: Brian Avery 1/7/02
+	-- buttons now checked during jffs2 scan
+	-- graphical feedback added for buttons and scan progress
+2.17.17: Jamey Hicks 1/3/02
+         -- added pcmcia driver framework
+2.17.16: Jamey Hicks 1/3/02
+         -- added msleep() uses OSCR
+         -- added sleeve driver framework
+         -- added sleeve init, sleeve insert, sleeve eject commands
+2.17.15: Brian Avery 1/3/02
+	-- fixed the 3100 (mono) lcd display code so that the linux
+		framebuffer appears correctly
+2.17.14: Jamey Hicks 1/3/02
+	 -- added code to pass mtd partition info on kernel cmdline
+	 -- will remove the ATAG_PTABLE code once kernel supports mtdpart= on cmdline
+2.17.13: Jamey Hicks 12/28/01
+	 -- added beginning of hardware abstraction layer for H3100/H3600/H3800
+2.17.12: Brian Avery 12/18/01
+	-- ok, we are back to using the action button to force us into the
+		bootldr.  The action button works for all models.
+2.17.11: Brian Avery 12/18/01
+	-- lcd screen now works for the 3800's.
+	-- can turn off lcd for 3100's now too
+2.17.10: Brian Avery 12/18/01
+	-- lcd screen now works for the 3100's.
+	-- made splash screen true 16 bit colour in prep for the 3800
+2.17.9: Jamey Hicks 12/18/01
+        -- changed xmodem, ymodem, and autoboot timeouts to be measured in seconds
+        -- ymodem works with minicom but not hyperterminal
+2.17.8: Jamey Hicks 12/17/01
+        -- integrated most of John Dorsey's patches, including Assabet,
+        md5sum, ymodem, and his jffs/jffs2 support
+2.17.7: Jamey Hicks 12/14/01
+        -- applied Sean Godsell's patch to reduce RTC runahead during reset
+        or resume.
+2.17.6: Brian Avery 12/13/01
+	-- fixed bug in loading/recognizing German and French
+		parrots/wince partitions
+2.17.5: Brian Avery 12/12/01
+	-- partition table now ordered by base address
+	-- 3800 gets an asset partition tacked on the last
+		flash sector
+2.17.4: Brian Avery 12/12/01
+	-- Bootloader now recognizes german wince partitions and has a 
+		more liberal is this a parrot bl check.		
+2.17.3: Brian Avery 12/12/01
+	-- tweaked  RTTR initialization in boot-sa1100.s
+	-- added a capabilities bit for 3800 support so BootBlaster and 
+		and the Bootloader checks it.
+	-- ALSO, NOW YOU NEED TO HOLD THE POWER KEY DOWN TO ACCESS THE BL
+		 **NOT** THE ACTION KEY
+2.17.2: Jamey Hicks 12/11/01
+	-- moved RTTR initialization very early in boot-sa1100.s
+	-- probably needs to be tweaked for wince
+2.17.1: Brian Avery 12/5/01
+	-- added support for the Ipaq 3800
+2.17.0: Jamey Hicks 12/5/01
+	-- changed version number because 2.16.25 changes boot behavior in
+	an incompatible way -- 2.4.7-rmk3-np1-devfs up to hh13 will no
+	longer boot on H3100
+
+2.16.25: Brian Avery 12/4/01
+         -- added a discovery function to dertermine 31/36/38xx models and 
+		use that to set mach_type
+2.16.24: Jamey Hicks 11/27/01
+         -- use ATAG_PTABLE_COMPAT for now
+2.16.23: Jamey Hicks 11/27/01
+         -- moved bootldr tag_ptable partition table defs to linux kernel
+            source include/linux/mtd/bootldr.h 
+2.16.22: Jamey Hicks 11/27/01
+         -- make mach_type not conditionalized by CONFIG_MACH_SKIFF'
+2.16.21: Jamey Hicks 11/27/01
+         -- added mach_type parameter: as of 2.4.15-rmk1, H3100, H3600, and
+         H3800 distinguished by mach_type
+            mach_type  22 for H3600 and H3700
+            mach_type 136 for H3100
+            mach_type 137 for H3800
+
+STABLE BOOTLDR:
+2.16.19: Brian Avery 11/2/01
+	-- Behaviour change-> if wince is installed we jump to it 
+		directly after a reset. This maintains parrot's 
+		pseudo soft-reboot fxnality.  If you hold down the 
+		action button you jump to our bootloader.  From here
+		if you boot wince, you WILL clear dram.  If wince is not
+		detected, the bootloader behaves as before.
+	--  if the action button is held down (wince or linux), we will not
+		autoboot.
+2.16.17: Brian Avery 11/2/01
+	-- load bootloader will now upload an OHH bootloader OR a parrot bootloader.
+2.16.16: Brian Avery 11/1/01
+	-- shortened default timeout to jump to os param
+	-- put in smarts to rescan the flash if things have changed.
+		--e.g. ls, reflash root, ls will result in another scan now.
+2.16.12: Jamey Hicks 10/18/01
+	 -- merged 2.16.11 onto cvs head branch
+2.16.10: Brian Avery 10/16/01
+
+2.16.10: Brian Avery 10/16/01
+	-- prevets flash operations other than load bootldr when 
+		running from DRAM
+2.16.8: Brian Avery 10/15/01
+	-- can load splash screen from a file 
+		-- supports binary ppm (P6) and binary pgm (P5) file formats
+	--re-enabled splash screen during jffs2 partition scan, overhead now 5%
+2.16.0-2.16.6: Brian Avery 10/12/01
+ - boots wince and linux.  suspends and resumes wince and linux and the bootldr.
+ - autoboots wince if it is there.
+
+============================================================
+2.15.19 -- Jamey Hicks 10/10/01
+- turn on the LCD after scanning the root partition for params
+- look for wince at 0x40000, do not attempt to scan jffs2 if found
+
+2.15.18 -- David Neuer 10/1/01
+- make root partition not overlap bootldr on monochrom configuration
+
+2.15.17 -- Jamey Hicks 9/28/01
+- increase bootldr partition to 0x40000 on monochrome configuration 
+
+2.15.16 -- Brian Avery 9/27/01
+- added icache on by default
+- made the bootldr,root partition the default one.
+
+2.15.15 -- Brian Avery 9/26/01
+- corrected params file reading bugs
+- added cat command
+
+2.15.14 -- Brian Avery 9/21/01
+- converted boot_linux to pass params in a tags list
+- enables bootldr to read params and partition table from root partition
+  /boot/params rather than a sector
+
+2.15.13 -- Brian Avery 9/19/01
+- removed problematic enabling of cache at init time
+- sped up jffs2 scan for empty fs
+
+2.15.12 -- Jamey Hicks 9/18/2001
+- initialize RTTR in bootldr.c so RTC will continue to count at 1Hz
+
+============================================================
+
+2.14.15  -- Jamey Hicks 8/19/01
+- made minor change to params_save so that saving parameters formatted
+PF_DECIMAL would not truncate the parameter list.  There is an probably 
+still an issue with strlen, as pointed out by Dave Panariti.
+
+2.14.14 -- Dave Panariti 6/22/2001
+- Added kpart=xxx parsing to boot flash to allow specifying a kernel
+  partition on the command line.
+
+2.14.13 -- Dave Panariti 6/22/2001
+- Added ability to run multiple commands separated by ';'
+- Added param which names the partition in which to find the kernel.
+
+2.14.12 -- Dave Panariti 6/14/2001
+- Fixed to to say 8b/color rather than to imple 8bpp.
+- Removed debug code in lcdzimg which prevented it from converting the
+  image to the lcd's color format.
+- Added back the CONFIG_GIMP_SPLASH_PNM vars to os xxx.mk which someone had
+  nuked.
+- Added target to make a raw compressed splash image for use with lcdzimg
+- Added some doc to makefile about splash image format, etc.
+- Added os_freebsd.mk so I can build at home again.
+
+2.14.11 -- Dave Panariti 6/13/2001
+- Made parameter execution overridden if booting verbosely (becoming
+  debug boot)
+- Added cvs_ver variable and tagver target to allow easy tagging w/
+  make
+- Made params save smarter about strings: now does strcmp.
+- Found bug in wince-bootldr w.r.t params save.  In this case, the default
+  params, which should point into flash at the original version of the
+  params, ends up pointing somewhere else distinctly non-default-paramish.
+  This needs to be fixed.  For the c000 (wince) bootldr, there is no flash
+  copy of the params for reference.  Perhaps we can make a copy of the
+  initialized params and use that as the reference in wince-bootldr.
+  A function to get the "defaults" will need to be conditionalized to
+  return the proper thing.  And it should be const.
+- Added -n option to params save to have it just show what it would
+  do. It also dumps the vars used to find the default params.
+
+2.14.10  -- Brian Avery 6/7/2001
+- partition save command now calls command_params_save as it ought to.
+- renamed the save [kernel World bootldr...] command to upload[ ...] 
+- if you try to load in a kernel larger than your kernel partition size 
+	there are now enough copies of the error message to overcome 
+	minicoms desire to eat them.  
+
+2.14.8 -- Jamey
+- dram_size was being probed but not saved in the dram_param
+
+2.14.7 -- Jamey
+- moved set_vppen and clr_vppen to btflash.c
+
+2.14.6  -- Chris McKillop 5/11/2001
+- Added new parameter values: domainname, dns1, dns2 and netcfg.  The first three 
+  are pretty obvious and the last can be used to flag for manual or dhcp network
+  configuration.
+- Updated the build process to use OS specific makefiles (os_<name>.mk).  
+
+
+2.14.5  -- Jamey 5/11/2001
+- added "jffs2" as valid flags argument for define partition
+- call params_eval() after load_params
+
+2.14.4  -- Jamey 5/11/2001
+- eflash <partitionname> now erases the whole named partition
+- partition define <partitionname> <base> <size> 16 
+  defines a JFFS2 partition.
+- load <partitionname> erases the whole partition if it is JFFS2, and marks
+  the unwritten sectors with jffs2_sector_marker0, jffs2_sector_marker1, jffs2_sector_marker2,
+  saving and erase cycle on the sectors.
+
+2.14.3
+- merged in mitsy mods
+
+2.14.2
+- fixed btflash_reset_partitions so it initializes default partitions even
+if no partition table is loaded into params partition.
+- reduced xmodem_timeout and xmodem_initial_timeout to 100000.  We might
+need to increase xmodem_initial_timeout to 100000 or 300000 for minicom.
+3,000,000 causes hyperterminal to fail to transfer.
+
+2.14.1
+- fixed dwordtodecimal so it prints '0' for 0 and not '' for 0.  (Tested
+before updating version number.)
+
+2.14.0 Jamey 5/3/2001
+- renumber to 2.14.0 because removal of headers and addition of partition
+tables is actually a relatively signicant change
+
+2.13.8 Jamey 5/3/2001
+- the load and store commands now use the partition table to upload and
+download regions by name
+- the kernel no longer has a 12 byte header
+
+2.13.7: Jamey 5/2/2001
+- implemented flash partition table
+
+2.13.6: Jamey 5/2/2001
+- removed the special partitions other than bootldr, params, and kernel
+- others will be supported by the currently unimplemented define_partition command
+

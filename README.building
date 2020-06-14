@@ -1,0 +1,40 @@
+
+1) Acquire bootldr source code.
+
+   bash$ cvs -d :anoncvs@cvs.handhelds.org:/cvs login
+   Logging in to :pserver:anoncvs@handhelds.org:2401/cvs
+   CVS password: anoncvs
+   bash$ cvs -d :anoncvs@cvs.handhelds.org:/cvs checkout bootldr
+   bash$ cd bootldr
+
+or
+
+  bash$ wget ftp://ftp.handhelds.org/pub/bootldr/bootldr-2.18.25.tar.gz
+  bash$ tar -zxvf bootldr-2.18.25.tar.gz
+  bash$ cd bootldr-2.18.25
+
+1b) Make sure you have a toolchain.  You may have to add zlib to your
+toolchain.
+
+  bash# wget http://www.handhelds.org/pub/linux/arm/toolchain/arm-linux-libz.tar.gz
+
+assuming handhelds.org toolchain in /skiff/local/bin
+
+  bash# tar -zxvf arm-linux-libz.tar.gz -C /skiff/local
+
+2) Configure: edit config.local.mk, setting CONFIG_ARCH and other options.  
+
+   bash$ echo 'CONFIG_ARCH=SA1100 > config.local.mk
+   bash$ echo 'CONFIG_MACH=IPAQ >> config.local.mk
+
+3) Build:
+
+   bash$ make all
+
+4) Install:
+   
+   If bootldr is already running on the target platform, get to the boot>
+   prompt and use the 'load bootldr' command.
+
+
+-Jamey 3/20/2002

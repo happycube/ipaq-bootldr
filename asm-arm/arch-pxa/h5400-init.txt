@@ -1,0 +1,105 @@
+
+## gpioN name input|output|altfcn|nc initval sleepstate
+gpio0	power_button_n  input
+gpio1	reset_button_n	input	
+gpio2	opt_int		input
+gpio3	backup_power	input
+gpio4	joystick_e	input		
+gpio5	com_dcd_something		input
+gpio6	nc6		output		/* 6 not connected */
+gpio7	reset_button_again_n input	/* connected to gpio 1 as well */
+gpio8	nc8		output		/* 8 not connected */ 
+gpio9	rso_n		input		/* reset output from max1702 which regulates 3.3 and 2.5 */ 
+gpio10	asic_int_n	input		/* from companion asic */
+gpio11	bt_env_0	output		/* to LMX9814 */
+gpio12	nc12		output		/* 12 not connected */
+gpio13	bt_env_1	output		/* to LMX9814 */
+gpio14	bt_host_wu	input		/* from LMX9814 */
+gpio15	cs1_n		cs1_n
+gpio16	nc16		output		/* 16 not connected */
+gpio17	nc17		output		/* 17 not connected */
+gpio18	rdy		rdy		/* 18 is pcmcia ready */
+gpio19	dreq1		dreq1
+gpio20	dreq0		dreq0
+gpio21	oe_rd_nwr	output_n	/* 21 is not connected */
+gpio22	nc22		output		/* 22 is not connected */
+gpio23	opt_spi_clk	sclk		/* to extension pack */
+gpio24	opt_spi_frm	sfrm		/* to extension pack */
+gpio25	opt_spi_txd	stxd		/* to extension pack */
+gpio26	opt_spi_rxd	srxd		/* to extension pack */
+gpio27	initialized_n	input		/* what is this for? */
+gpio28	i2s_bitclk_out	bitclk_out_i2s	/* connected to ?? codec */
+gpio29	i2s_sdata_in0	sdata_in_i2s	/* connected to ?? codec */
+gpio30	i2s_sdata_out	sdata_out_i2s	/* connected to ?? codec */
+gpio31	i2s_sync	sync_i2s	/* connected to ?? codec */
+gpio32	i2s_sysclk_out	sysclk_i2s	/* connected to ?? codec */
+gpio33	cs5_n		cs5_n
+gpio34	com_rxd		ffrxd		/* connected to cradle/cable connector */ 
+gpio35	com_cts		ffcts		/* connected to cradle/cable connector */ 
+gpio36	com_dcd		ffdcd		/* connected to cradle/cable connector */ 
+gpio37	com_dsr		ffdsr		/* connected to cradle/cable connector */ 
+gpio38	com_ri		ffri		/* connected to cradle/cable connector */ 
+gpio39	com_txd		fftxd		/* connected to cradle/cable connector */ 
+gpio40	com_dtr		ffdtr		/* connected to cradle/cable connector */ 
+gpio41	com_rts		ffrts		/* connected to cradle/cable connector */ 
+
+gpio42	bt_rxd		btrxd		/* connected to BT (LMX9814) */ 
+gpio43	bt_txd		bttxd		/* connected to BT (LMX9814) */ 
+gpio44	bt_cts		btcts		/* connected to BT (LMX9814) */ 
+gpio45	bt_rts		btrts		/* connected to BT (LMX9814) */ 
+gpio46	irda_rxd	icprxd		/* connected to irda */ 
+gpio47	irda_txd	icptxd		/* connected to irda */ 
+
+gpio48	poe_n		poe_n		/* used for pcmcia */ 
+gpio49	pwe_n		pwe_n		/* used for pcmcia */ 
+gpio50	pior_n		pior_n		/* used for pcmcia */ 
+gpio51	piow_n		piow_n		/* used for pcmcia */ 
+gpio52	pce1_n		pce1_n		/* used for pcmcia */ 
+gpio53	pce2_n		pce2_n		/* used for pcmcia */ 
+gpio54	psktsel		psktsel		/* used for pcmcia */ 
+gpio55	preg_n		preg_n		/* used for pcmcia */ 
+gpio56	pwait_n		pwait_n		/* used for pcmcia */ 
+gpio57	iois16_n	iois16_n	/* used for pcmcia */ 
+
+gpio58	irda_sd		output		/* to hsdl3002 sd */ 
+
+gpio59	usb_charge_on	output
+gpio60	power_sd	output		/* controls power to SD socket */
+gpio61	power_fp_n	output_n	/* controls power to fingerprint chip */
+gpio62	power_accel_n	output_n	/* controls power to accelerometer */
+gpio63	nc63		nc
+gpio64	opt_nvram_n	output		/* controls power to expansion pack */  
+gpio65	chg_en		output		/* to sc801 en */
+gpio66	usb_pullup	output		/* USB d+ pullup via 1.5K resistor */
+gpio67	1v8_down_n	output		/* 1.8V used by asic */
+gpio68	ext_chg_rate	output		/* enables external charging rate @@@@ check this one*/
+gpio69	nc69		nc		/* @@@@ check this one */
+gpio70	cir_reset	output		/* consumer IR reset */
+gpio71	power_light_sensor_n	output_n	/* controls power to the light sensor */
+gpio72	bt_m_reset	output
+gpio73	std_charge_rate output		/* enables standard charging rate */
+gpio74	sd_wp_n		input		/* @@@@ check this one */
+gpio75	vibrate_on_n	output_n	/* external pullup on this */  
+gpio76	headphone_detect input		/* @@@@ check this one */
+gpio77	usb_chg_rate	 output		/* select rate for charging via usb @@@@ check this one */  
+gpio78	cs2_n		 cs2_n
+gpio79	cs3_n		 cs3_n
+gpio80	cs4_n		 cs4_n
+
+#ifdef CONFIG_MACH_IPAQ3	
+GAFR0x_Init:	.long 0x80000001
+GAFR1x_Init:	.long 0x00000010
+GAFR0y_Init:	.long 0x999A8558
+GAFR1y_Init:	.long 0xAAA5AAAA
+GAFR0z_Init:	.long 0xAAAAAAAA
+GAFR1z_Init:	.long 0x00000002
+GPDRx_Init:	.long  0xd3e3b940
+GPDRy_Init:	.long  0x7cffab83
+GPDRz_Init:	.long  0x00016bdf
+GPSRx_Init:	.long  0xD320A800 /* was 0x00200000 */
+GPSRy_Init:	.long  0x64FFAB83 /* was 0x00000000 */
+GPSRz_Init:	.long  0x0001C8C9 /* was 0x00000800 */
+GPCRx_Init:	.long  0x00C31140 /* was 0x00000000 */
+GPCRy_Init:	.long  0x98000000 /* was 0x00000000 */
+GPCRz_Init:	.long  0x00002336 /* was 0x00000000 */
+#endif

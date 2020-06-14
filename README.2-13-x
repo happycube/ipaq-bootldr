@@ -1,0 +1,182 @@
+
+###########################################################################
+NOTICE:  This code boots serial silently.  There is no notification
+on the serial port that the machine is not dead.  Look at the LCD
+where we have a boot splash screen with some instruction.
+You can still (as of 2-13-0) press a key on a serial console to get a
+bootldr prompt.  However, this may go away in the future since serial
+keyboards or other serial peripherals may not be compatible with this.
+###########################################################################
+
+###########################################################################
+APOLOGY:  This code has only been compiled and tested with
+CONFIG_MACH_IPAQ set.  I don't have access to any other machines.  I've
+tagged all versions current at merge time with the tag 
+``pre-davep-mods-merge''
+I've (kind of) tried to keep most changes inside CONFIG_MACH_IPAQ ifdefs.
+I made a lot of changes to the serial stuff.
+###########################################################################
+
+Please send email to bootldr@handhelds.org with bug reports and 
+suggestions.
+
+This code is the merge from the davep-mods branch.
+It includes many new things:
+
+* Silent boot override.  Holding down the "Action Button" during
+  boot tells the bootldr to be its old noisy self.
+
+* Command line editing (may already be there in older versions) with
+  history.  
+
+* LCD control. See README.splash for info on changing splash screens.
+  There are some new lcd commands for testing and playing.
+  Type ? at the boot> prompt.
+
+* Button input.  You can modify some params to indicate the action
+  taken on a button *release*
+  The button layout on the iPAQ as viewed from the top with the joy
+  pad at the bottom (6,7,8,9):
+/*
+ * 1
+ * 
+ *
+ *      3     4 
+ *   2            5
+ *         6
+ *        8 7
+ *         9
+ */
+
+ The buttons' default commands:
+  recb_cmd=				# 1
+  calb_cmd=ser_con			# 2
+  conb_cmd=irda_con			# 3
+  qb_cmd=boot				# 4
+  startb_cmd=				# 5
+  upb_cmd=				# 6
+  rightb_cmd=				# 7
+  leftb_cmd=				# 8
+  downb_cmd=				# 9
+
+  If non empty, the value of the variable is pushed into the input
+  buffer and then executed.
+
+* XMODEM variables.  See README.xmodem
+
+* call default.  If you're like me, and I know I am, then you download
+  bootldrs all the time.  Now, when you do a load ram xxx lll, xxx
+  becomes the default call address when call gets ``.'' as a
+  parameter.  Just type, e.g.: 
+  boot> load ram 0xc0022000 87625
+  boot> call .
+
+* reset does a software reset.
+
+* The ``power'' button snoozes the ipaq.  Power again reboots
+  automatically to a prompt.
+
+* ``Control-Alt-Delete'' rebooting:
+  Hold down any key 2-5 and press the "Action button" and you will
+  reboot. 
+
+* Touchscreen.  In aux_micro.c has some preliminary touch screen
+   code. It mostly works except for any kind of smoothing, and
+   calibration is static (and stolen from the kernel).
+
+* Do a ? for more new things.
+
+* Talterm mode.  This is probably useless to 99.99% of the people
+  using iPAQs, but it is very useful for bootldr and other harware
+  development on the iPAQ and various addons, sleeves, etc.
+  Talterm is a very heavy-weight debugging/test utility.  It is
+  written in python and runs on the host.  All of python is available
+  to use.  When started, you are sitting in python's command line
+  interpreter with the ability to send command to the device.  The
+  device is represented by the ``b'' instance of the Badge class (yes,
+  we moved it from another project).  Any bootldr command can be
+  issued by typing b.cmd(args).  Commands return variables that
+  contain a numeric status code (always 0 for the bootldr), and any
+  text printed by the command.  You can parse this to extract
+  results.  If people are interested we will package up talterm for
+  release.  Here's a simple example of what it can do.  This code
+  allowed me to work out sleep issues on the ipaq:
+
+import stat, time
+import h2py
+
+#
+# this sucks in the sa1100.h file and converts what it can to be 
+# python variables or simple functions.
+#
+h2py.h2py_eval('/crl/talisman/sandboxes/davep/ipaq/4/bootldr/sa1100.h', globals())
+
+import re
+
+b.cmdex(0)
+
+def regwrite(addr, val):
+    b.poke('int', addr, val)	# this is a bootldr command
+
+def regread(addr):
+    """return the value of a processor config register"""
+    rc = b.peek('int', addr)
+    m = re.search('value = ([0-9a-fA-F]+)', rc.text)
+    return(int(m.group(1), 16))
+                  
+def bitsleep(pspr=0):
+    #
+    # put a ipaq to sleep
+    #
+        
+    # set pspr
+    regwrite(PSPR, pspr)
+
+    # clear reset register status bits
+    regwrite(RCSR, 0x0f)
+
+    # setup GPIO outputs sleep state
+    # use current values
+    mask = regread(GPIO_BASE+GPIO_GPDR_OFF)
+    v = regread(GPIO_BASE+GPIO_GPLR_OFF)
+    v &= mask
+    regwrite(PGSR, v)
+
+    # set wakeup conditions
+    # any gpio edge
+    regwrite(PWER, 0x0fffffff)
+
+    # setup edge reggies
+    regwrite(GPIO_BASE+GPIO_GRER_OFF, 0x0fffffff)
+    regwrite(GPIO_BASE+GPIO_GFER_OFF, 0x0fffffff)
+
+    # clear all set bits
+    regwrite(GPIO_BASE+GPIO_GEDR_OFF, 0xffffffff)
+
+    # set up an RTC int
+#      regwrite(RTTR, 32767)        # set up RTC divisor (--> ~1Hz)
+#      v = regread(RCNR)
+#      v += 10                             # 1hz-->10seconds
+#      regwrite(RTAR, v)
+#      regread(RCNR)
+#      regwrite(RTSR, 1<<2)
+
+    # enable some ints so we can wake up
+    regwrite(ICLR, 0)            # make 'em all irqs
+    
+    regwrite(ICMR,
+             (1<<31)|                   # RTC match int
+             (1<<17)|                   # gpio 27-11 (incl ACT button)
+             (1<<0))                    # power button
+
+    regread(RTSR)
+
+    #v = regread(DRAM_CONFIGURATION_BASE+MDREFR)
+    #v |= MDREFR_K1DB2
+    #regwrite(DRAM_CONFIGURATION_BASE+MDREFR,v)
+    #regwrite(PPCR_REG, 0)
+    
+    # zzzzz
+    b.pre_ack_cmd()
+    regwrite(PMCR, (1<<0))
+
